@@ -18,9 +18,10 @@ namespace TB_QuestGame
             {
                 CommonName = "Seattle",
                 RegionLocationID = 1,
-                Description = "Your Home!!! " +
-                    "" +
-                    "\n",
+                Description = "Say hello to home! You know this place like the back of your hand. You've" +
+                "spent a lot of time growing up here and have a great understanding of its layout. However," +
+                "you won't be staying long..." +
+                "\n",
                 GeneralContents = "General Contents\n",
                 ExperiencePoints = 10,
                 PointsToEnter = 0,
@@ -34,7 +35,7 @@ namespace TB_QuestGame
 
             new RegionLocation
             {
-                CommonName = "Wilderness2",
+                CommonName = "Wilderness",
                 RegionLocationID = 2,
                 Description = "After walking for sometime you find yourself in the wilderness! You look around" +
                 "and see an abundance of wood, water, and wildlife!" +
@@ -57,7 +58,7 @@ namespace TB_QuestGame
                 Description = "Vancouver.",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 10,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     4,
                     8
@@ -66,7 +67,7 @@ namespace TB_QuestGame
 
                         new RegionLocation
             {
-                CommonName = "Wilderness4",
+                CommonName = "Wilderness",
                 RegionLocationID = 4,
                 Description = "After walking for sometime you find yourself in the wilderness! You look around" +
                 "and see an abundance of wood, water, and wildlife!" +
@@ -74,7 +75,7 @@ namespace TB_QuestGame
                 "do next?",
                 GeneralContents = "Super Potion (+50 HP)",
                 ExperiencePoints = 20,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     5,
                     8
@@ -88,7 +89,7 @@ namespace TB_QuestGame
                 Description = "Skagway",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 20,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     6,
                     9
@@ -97,7 +98,7 @@ namespace TB_QuestGame
 
             new RegionLocation
             {
-                CommonName = "Wilderness6",
+                CommonName = "Wilderness",
                 RegionLocationID = 6,
                 Description = "After walking for sometime you find yourself in the wilderness! You look around" +
                 "and see an abundance of wood, water, and wildlife!" +
@@ -105,7 +106,7 @@ namespace TB_QuestGame
                 "do next?",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 25,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     7,
                     9
@@ -119,10 +120,9 @@ namespace TB_QuestGame
                 Description = "Dawson",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 25,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
-                    6,
-                    
+                    6, 
                 }
             },
 
@@ -136,7 +136,7 @@ namespace TB_QuestGame
                 "do next?",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 30,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     1,
                     2,
@@ -151,7 +151,7 @@ namespace TB_QuestGame
                 Description = "Edmonton.",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 30,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     8,
                     10
@@ -167,7 +167,7 @@ namespace TB_QuestGame
                 "do next?",
                 GeneralContents = "Super Medic Kit(+5 Lives)",
                 ExperiencePoints = 40,
-                                CanTravelToNext = new List<int>()
+                CanTravelToNext = new List<int>()
                 {
                     4,
                     5,
