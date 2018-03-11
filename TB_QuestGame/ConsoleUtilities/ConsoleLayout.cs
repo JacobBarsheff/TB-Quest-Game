@@ -43,9 +43,9 @@ namespace TB_QuestGame
         // menu box configuration
         //
         public static int MenuBoxWidth = 37;
-        public static int MenuBoxHeight = 24;
+        public static int MenuBoxHeight = 21;
         public static int MenuBoxPositionLeft = 1;
-        public static int MenuBoxPositionTop = 8;
+        public static int MenuBoxPositionTop = 11;
 
         //
         // message box configuration
@@ -67,7 +67,7 @@ namespace TB_QuestGame
         // health and status box configuration
         //
         public static int HealthBoxWidth = 37;
-        public static int HealthBoxHeight = 5;
+        public static int HealthBoxHeight = 8;
         public static int HealthBoxPositionLeft = 1;
         public static int HealthBoxPositionTop = 3;
 
@@ -75,7 +75,7 @@ namespace TB_QuestGame
         // map box configuration
         //
         public static int MapBoxWidth = 37;
-        public static int MapBoxHeight = 12;
+        public static int MapBoxHeight = 15;
         public static int MapBoxPositionLeft = 121;
         public static int MapBoxPositionTop = 3;
 
@@ -83,8 +83,8 @@ namespace TB_QuestGame
         // inventory box configuration
         //
         public static int InventoryBoxWidth = 37;
-        public static int InventoryBoxHeight = 21;
+        public static int InventoryBoxHeight = 18;
         public static int InventoryBoxPositionLeft = 121;
-        public static int InventoryBoxPositionTop = 15;
+        public static int InventoryBoxPositionTop = 18;
     }
 }

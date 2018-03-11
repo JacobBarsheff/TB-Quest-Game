@@ -11,12 +11,25 @@ namespace TB_QuestGame
     /// </summary>
     public class ConsoleView
     {
+        #region ENUMS
+
+        private enum ViewStatus
+        {
+            TravelerInitialization,
+            PlayingGame
+        }
+
+        #endregion
+
         #region FIELDS
 
         //
         // declare game objects for the ConsoleView object to use
         //
         Prospector _gameTraveler;
+        Universe _gameUniverse;
+
+        ViewStatus _viewStatus;
 
         #endregion
 
@@ -29,9 +42,12 @@ namespace TB_QuestGame
         /// <summary>
         /// default constructor to create the console view objects
         /// </summary>
-        public ConsoleView(Prospector gameTraveler)
+        public ConsoleView(Prospector gameTraveler, Universe gameUniverse)
         {
             _gameTraveler = gameTraveler;
+            _gameUniverse = gameUniverse;
+
+            _viewStatus = ViewStatus.TravelerInitialization;
 
             InitializeDisplay();
         }
@@ -62,7 +78,7 @@ namespace TB_QuestGame
             DisplayMenuBox(menu);
             DisplayInputBox();
             string playerHealth = " ";
-            DisplayHealthBox($"Current Health - {_gameTraveler.ProspectorHealth.ToString()}/35", playerHealth);
+            DisplayHealthBox($"Player Status", playerHealth);
             DisplayMapBox();
             DisplayInventoryBox();
         }
@@ -82,17 +98,29 @@ namespace TB_QuestGame
         public ProspectorAction GetActionMenuChoice(Menu menu)
         {
             ProspectorAction choosenAction = ProspectorAction.None;
+            Console.CursorVisible = false;
 
             //
-            // TODO validate menu choices
+            // create an array of valid keys from menu dictionary
             //
-            ConsoleKeyInfo keyPressedInfo = Console.ReadKey();
-            char keyPressed = keyPressedInfo.KeyChar;
+            char[] validKeys = menu.MenuChoices.Keys.ToArray();
+
+            //
+            // validate key pressed as in MenuChoices dictionary
+            //
+            char keyPressed;
+            do
+            {
+                ConsoleKeyInfo keyPressedInfo = Console.ReadKey();
+                keyPressed = keyPressedInfo.KeyChar;
+
+            } while (!validKeys.Contains(keyPressed));
+
             choosenAction = menu.MenuChoices[keyPressed];
+            Console.CursorVisible = true;
 
             return choosenAction;
         }
-
         /// <summary>
         /// get a string value from the user
         /// </summary>
@@ -127,6 +155,7 @@ namespace TB_QuestGame
             DisplayInputBoxPrompt(prompt);
             while (!validResponse)
             {
+
                 if (int.TryParse(Console.ReadLine(), out integerChoice))
                 {
                     if (integerChoice >= minimumValue && integerChoice <= maximumValue)
@@ -378,6 +407,17 @@ namespace TB_QuestGame
             Console.Write(ConsoleWindowHelper.Center(healthBar, ConsoleLayout.HealthBoxWidth - 4 - (_gameTraveler.ProspectorHealth - 2)));
             }
 
+            //display exp
+            Console.BackgroundColor = ConsoleTheme.EXPBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.EXPBoxForegroundColor;
+
+            int startingRowExp = ConsoleLayout.HealthBoxPositionTop + 10;
+            int rowExp = startingRow;
+            Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, 8);
+            Console.Write($"Current XP: {_gameTraveler.ExpPoints} ");
+
+
+
 
             //List<string> messageTextLines = new List<string>();
             //messageTextLines = ConsoleWindowHelper.MessageBoxWordWrap(messageText, ConsoleLayout.MessageBoxWidth - 4);
@@ -395,14 +435,53 @@ namespace TB_QuestGame
 
         public void DisplayMapBox()
         {
-            Console.BackgroundColor = ConsoleTheme.InputBoxBackgroundColor;
-            Console.ForegroundColor = ConsoleTheme.InputBoxBorderColor;
+            Console.BackgroundColor = ConsoleTheme.MapBoxBorderBackColor;
+            Console.ForegroundColor = ConsoleTheme.MapBoxBorderColor;
 
             ConsoleWindowHelper.DisplayBoxOutline(
                 ConsoleLayout.MapBoxPositionTop,
                 ConsoleLayout.MapBoxPositionLeft,
                 ConsoleLayout.MapBoxWidth,
                 ConsoleLayout.MapBoxHeight);
+
+            Console.BackgroundColor = ConsoleTheme.MapBoxHeaderBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.MapBoxHeaderForegroundColor;
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 15, ConsoleLayout.MapBoxPositionTop + 1);
+            Console.Write(ConsoleWindowHelper.Center("Map", ConsoleLayout.MapBoxWidth - 30));
+
+            int startingRow = ConsoleLayout.MapBoxPositionTop + 1;
+            int row = startingRow;
+            Console.BackgroundColor = ConsoleTheme.MapBoxBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.MapBoxForegroundColor;
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 2, row);
+            Console.WriteLine("Dawson");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 2);
+            Console.WriteLine("Wilderness");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 24, row +2);
+            Console.WriteLine("Edmonton");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 4);
+            Console.WriteLine("Skagway");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 13, row + 4);
+            Console.WriteLine("Wilderness");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 6);
+            Console.WriteLine("Wilderness");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 8);
+            Console.WriteLine("Vancouver");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 19, row + 8);
+            Console.WriteLine("Wilderness");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 10);
+            Console.WriteLine("Wilderness");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 7, row + 12);
+            Console.WriteLine("Seattle");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 10);
+            Console.WriteLine("N");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 29, row + 11);
+            Console.WriteLine("E");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 12);
+            Console.WriteLine("S");
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 27, row + 11);
+            Console.WriteLine("W ");
+
         }
         public void DisplayInventoryBox()
         {
@@ -480,10 +559,10 @@ namespace TB_QuestGame
             //
             // get prospector's age
             //
-            DisplayGamePlayScreen("Adventure Prep - Age", Text.InitializeAdventureGetTravelerAge(prospector), ActionMenu.GameIntro, "");
-            int prospectorAge;
-            GetInteger($"Enter your age {prospector.Name}: ", 0, 100, out prospectorAge);
-            prospector.Age = prospectorAge;
+            //DisplayGamePlayScreen("Adventure Prep - Age", Text.InitializeAdventureGetTravelerAge(prospector), ActionMenu.GameIntro, "");
+            //int prospectorAge;
+            //GetInteger($"Enter your age {prospector.Name}: ", 0, 100, out prospectorAge);
+            //prospector.Age = prospectorAge;
 
             //
             // get prospector's title
@@ -588,8 +667,87 @@ namespace TB_QuestGame
         {
             DisplayGamePlayScreen("Prospector Updated Information", Text.TravelerInfo(gameplayer), ActionMenu.MainMenu, "");
         }
+
+
+        public void DisplayListOfRegionLocations()
+        {
+            DisplayGamePlayScreen("List: Region Locations", Text.ListRegionLocations
+                (_gameUniverse.RegionLocations), ActionMenu.MainMenu, "");
+        }
+
+        #region ----- display responses to menu action choices -----
+
+
+        public void DisplayLookAround()
+        {
+            RegionLocation currentRegionLocation = _gameUniverse.GetRegionLocationById
+                (_gameTraveler.CurrentRegionLocationID);
+            DisplayGamePlayScreen("Current Location", Text.LookAround(currentRegionLocation), ActionMenu.MainMenu, "");
+        }
+
+        public int DisplayGetNextRegionLocation()
+        {
+            int regionLocationID = 0;
+            bool validRegionLocationId = false;
+
+            DisplayGamePlayScreen("Travel", Text.Travel(_gameTraveler, _gameUniverse.RegionLocations), ActionMenu.MainMenu, "");
+
+            while (!validRegionLocationId)
+            {
+                //
+                // get an integer from the player
+                //
+                GetInteger($"Enter your new location {_gameTraveler.Name}: ", 1, _gameUniverse.GetMaxRegionLocationId(), out regionLocationID);
+
+                //
+                // validate integer as a valid space-time location id and determine accessibility
+                //
+                if (_gameUniverse.IsValidRegionLocationLocationId(regionLocationID))
+                {
+                    if (_gameUniverse.GetRegionLocationById(_gameTraveler.CurrentRegionLocationID).CanTravelToNext.Contains(regionLocationID))
+                    {
+                        validRegionLocationId = true;
+                        //if (_gameUniverse.RegionLocations[regionLocationID].CanTravelToNext.Contains(regionLocationID))
+                        //{
+                        //    validRegionLocationId = true;
+                        //}
+                        //else
+                        //{
+                        //    ClearInputBox();
+                        //    DisplayInputErrorMessage("You don't have enough experience points to enter!");
+                        //}
+
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("???It appears you attempting to travel to an inaccessible location. Please try again.");
+                    }
+                }
+                else
+                {
+                    DisplayInputErrorMessage($"!!!It appears you entered an{regionLocationID} invalid Space-Time location id. Please try again.");
+                }
+            }
+
+            return regionLocationID;
+        }
+        public void DisplayLocationsVisited()
+        {
+            // generate a list of space time locations that have been visited
+
+            List<RegionLocation> visitedRegionLocations = new List<RegionLocation>();
+            foreach (int regionLocationId in _gameTraveler.RegionLocationsVisited)
+            {
+                visitedRegionLocations.Add(_gameUniverse.GetRegionLocationById(regionLocationId));
+            }
+
+            DisplayGamePlayScreen("Regions Visited", Text.VisitedLocations(visitedRegionLocations), ActionMenu.MainMenu, "");
+
+        }
         #endregion
 
+        #endregion
         #endregion
     }
 }

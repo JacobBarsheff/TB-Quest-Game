@@ -30,6 +30,9 @@ namespace TB_QuestGame
         private int _age;
         private Title _title;
         private bool _hasFishedHunted;
+        private int _currentRegionLocationID;
+
+
 
 
 
@@ -37,6 +40,14 @@ namespace TB_QuestGame
         #endregion
 
         #region PROPERTIES
+
+        public int CurrentRegionLocationID
+        {
+            get { return _currentRegionLocationID; }
+            set { _currentRegionLocationID = value; }
+        }
+
+
 
         public string Name
         {

@@ -37,9 +37,13 @@ namespace TB_QuestGame
             MenuTitle = "Main Menu",
             MenuChoices = new Dictionary<char, ProspectorAction>()
                 {
-                    { '1', ProspectorAction.ProspectorInfo },
+                    { '1', ProspectorAction.ProspectorInfo},
                     { '2', ProspectorAction.EditAccount},
-                    { '3', ProspectorAction.Exit }
+                    {'3', ProspectorAction.LookAround},
+                    {'4', ProspectorAction.Travel},
+                    {'5', ProspectorAction.ProspectorLocationsVisited},
+                    {'6', ProspectorAction.ListDestinations},
+                    { '0', ProspectorAction.Exit}
                 }
         };
 

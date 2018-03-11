@@ -64,10 +64,24 @@ namespace TB_QuestGame
         //
         // health box colors
         //
+        public static ConsoleColor EXPBackgroundColor = ConsoleColor.Gray;
+        public static ConsoleColor EXPBoxForegroundColor = ConsoleColor.White;
         public static ConsoleColor HealthBackgroundColor = ConsoleColor.Green;
-        public static ConsoleColor HealthBoxForegroundColor = ConsoleColor.Red;
+        public static ConsoleColor HealthBoxForegroundColor = ConsoleColor.White;
         public static ConsoleColor HealthBoxBorderColor = ConsoleColor.DarkYellow;
         public static ConsoleColor HealthBoxHeaderBackgroundColor = ConsoleColor.DarkBlue;
         public static ConsoleColor HealthBoxHeaderForegroundColor = ConsoleColor.DarkYellow;
+
+        //
+        // map box colors
+        //
+        public static ConsoleColor MapBoxBackgroundColor = ConsoleColor.White;
+        public static ConsoleColor MapBoxForegroundColor = ConsoleColor.Blue;
+
+        public static ConsoleColor MapBoxErrorMessageForegroundColor = ConsoleColor.Red;
+        public static ConsoleColor MapBoxBorderColor = ConsoleColor.DarkYellow;
+        public static ConsoleColor MapBoxBorderBackColor = ConsoleColor.DarkBlue;
+        public static ConsoleColor MapBoxHeaderBackgroundColor = ConsoleColor.DarkYellow;
+        public static ConsoleColor MapBoxHeaderForegroundColor = ConsoleColor.White;
     }
 }

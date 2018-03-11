@@ -40,10 +40,8 @@ namespace TB_QuestGame
         public static string CurrrentLocationInfo()
         {
             string messageBoxText =
-            "You are now in the Norlon Corporation research facility located in " +
-            "the city of Heraklion on the north coast of Crete. You have passed through " +
-            "heavy security and descended an unknown number of levels to the top secret " +
-            "research lab for the Aion Project.\n" +
+            "You are located in the bustling city of Seattle! North of you lies the great " +
+            "Canadian wilderness and Tundra! The world is yours.\n" +
             " \n" +
             "\tChoose from the menu options to proceed.\n";
 
@@ -209,29 +207,129 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        //public static string Travel(int currentSpaceTimeLocationId, List<SpaceTimeLocation> spaceTimeLocations)
-        //{
-        //    string messageBoxText =
-        //        $"{gameTraveler.Name}, Aion Base will need to know the name of the new location.\n" +
-        //        " \n" +
-        //        "Enter the ID number of your desired location from the table below.\n" +
-        //        " \n";
+        public static string ListRegionLocations(IEnumerable<RegionLocation> regionLocations)
+        {
+            string messageBoxText =
+                "Space-Time Locations\n" +
+                " \n" +
+
+            //
+            // display table header
+            //
+            "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
 
 
-        //    string spaceTimeLocationList = null;
+            //
+            // display all locations
+            //
+            string regionLocationsList = null;
+            foreach (RegionLocation rl in regionLocations)
+            {
+                regionLocationsList +=
+                    $"{rl.RegionLocationID}".PadRight(10) +
+                    $"{rl.CommonName}".PadRight(30) +
+                    Environment.NewLine;
+            }
 
-        //    foreach (SpaceTimeLocation spaceTimeLocation in spaceTimeLocations)
-        //    {
-        //        if (race != Character.RaceType.None)
-        //        {
-        //            raceList += $"\t{race}\n";
-        //        }
-        //    }
+            messageBoxText += regionLocationsList;
 
-        //    messageBoxText += raceList;
+            return messageBoxText;
 
-        //    return messageBoxText;
-        //}
+        }
+        public static string LookAround(RegionLocation regionLocation)
+        {
+            string messageBoxText =
+                $"Current Location: {regionLocation.CommonName}\n" +
+                $" \n" +
+                regionLocation.GeneralContents;
+
+            return messageBoxText;
+        }
+        public static string Travel(Prospector gametraveler, List<RegionLocation> regionLocations)
+        {
+            string messageBoxText =
+                $"{gametraveler.Name}, Where would you like to head next?\n" +
+                $"Note: Remember, journeys into the wilderness can be deadly, make sure\n" +
+                $"your ready!" +
+                $"\n" +
+                $"Enter the ID number of your desired next location below.\n" +
+                $"\n" +
+                $"ID".PadRight(10) + "Name".PadRight(30) + "Accessible".PadRight(10) + "\n" +
+                "---".PadRight(10) + "-------------------------".PadRight(30) + "-----------".PadRight(10) + "\n";
+            
+            string regionLocationList = null;
+
+            foreach (RegionLocation rl in regionLocations)
+            {
+                if (rl.RegionLocationID == gametraveler.CurrentRegionLocationID)
+                {
+                    foreach (var locationNum in rl.CanTravelToNext)
+                    {
+                        foreach (RegionLocation selectedLoc in regionLocations)
+                        {
+                            if (selectedLoc.RegionLocationID == locationNum)
+                            {
+                                    regionLocationList +=
+                                    $"{selectedLoc.RegionLocationID}".PadRight(10) +
+                                    $"{selectedLoc.CommonName}".PadRight(30) +
+                                    $"{rl.Accessible}".PadRight(10) +
+                                    Environment.NewLine;
+                            }
+                        }
+
+                    }
+                }
+
+                //if (rl.CurrentRegionLocationID != gametraveler.CurrentRegionLocationID)
+                //{
+
+                //    regionLocationList +=                    
+                //        $"{rl.CurrentRegionLocationID}".PadRight(10) +
+                //        $"{rl.CommonName}".PadRight(30) +
+                //        $"{rl.Accessible}".PadRight(10) +
+                //        Environment.NewLine;
+                //}
+
+
+            }
+
+            messageBoxText += regionLocationList;
+            return messageBoxText;
+        }
+
+        public static string CurrentLocationInfo(RegionLocation regionLocation)
+        {
+            string messageBoxText =
+                $"Current Location: {regionLocation.CommonName}\n" +
+                "\n" +
+                regionLocation.Description;
+
+            return messageBoxText;
+        }
+
+        public static string VisitedLocations(IEnumerable<RegionLocation> regionLocations)
+        {
+            string messageBoxText =
+                "Space-Time Locations Visted \n" +
+                "\n" +
+
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            string regionLocationList = null;
+            foreach (RegionLocation rl in regionLocations)
+            {
+                regionLocationList +=
+                    $"{rl.RegionLocationID}".PadRight(10) +
+                    $"{rl.CommonName}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += regionLocationList;
+
+            return messageBoxText;
+        }
 
         #endregion
     }

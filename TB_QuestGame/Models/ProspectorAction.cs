@@ -24,6 +24,7 @@ namespace TB_QuestGame
         ProspectorInfo,
         ProspectorInventory,
         ProspectorTreasure,
+        ProspectorLocationsVisited,
         ListDestinations,
         ListItems,
         ListTreasures,

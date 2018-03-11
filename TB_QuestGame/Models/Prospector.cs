@@ -27,10 +27,23 @@ namespace TB_QuestGame
         private int _prospectorHealth = 35;
         private bool _knowsAboutKlondike;
         private string _prospectorAddress;
+        private List<int> _regionLocationsVisited;
+        private int _expPoints;
+
+
+
 
         #endregion
 
         #region PROPERTIES
+        public int ExpPoints
+        {
+            get { return _expPoints; }
+            set { _expPoints = value; }
+        }
+
+
+
         public int ProspectorHealth
         {
             get { return _prospectorHealth; }
@@ -53,18 +66,24 @@ namespace TB_QuestGame
             set { _prospectorAddress = value; }
         }
 
+        public List<int> RegionLocationsVisited
+        {
+            get { return _regionLocationsVisited; }
+            set { _regionLocationsVisited = value; }
+        }
+
         #endregion
 
         #region CONSTRUCTORS
 
         public Prospector()
         {
-
+            _regionLocationsVisited = new List<int>();
         }
 
-        public Prospector(string name, Title title) : base(name, title)
+        public Prospector(string name, Title title, int regionLocationID) : base(name, title)
         {
-
+            _regionLocationsVisited = new List<int>();
         }
 
         #endregion
@@ -76,6 +95,17 @@ namespace TB_QuestGame
                 $"I am in {_propspectorHealthStatus} health. I live at {_prospectorAddress}.";
         }
 
+        public bool hasVisited(int _regionLocationId)
+        {
+            if (RegionLocationsVisited.Contains(_regionLocationId))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         #endregion
     }

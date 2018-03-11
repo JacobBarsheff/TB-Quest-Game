@@ -15,7 +15,9 @@ namespace TB_QuestGame
 
         private ConsoleView _gameConsoleView;
         private Prospector _gamePlayer;
+        private Universe _gameUniverse;
         private bool _playingGame;
+        public RegionLocation _currentLocation;
 
         #endregion
 
@@ -49,7 +51,8 @@ namespace TB_QuestGame
         private void InitializeGame()
         {
             _gamePlayer = new Prospector();
-            _gameConsoleView = new ConsoleView(_gamePlayer);
+            _gameUniverse = new Universe();
+            _gameConsoleView = new ConsoleView(_gamePlayer, _gameUniverse);
             _playingGame = true;
 
             Console.CursorVisible = false;
@@ -89,6 +92,8 @@ namespace TB_QuestGame
             //
             // prepare game play screen
             //
+
+            _currentLocation = _gameUniverse.GetRegionLocationById(_gamePlayer.CurrentRegionLocationID);
             _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrrentLocationInfo(), ActionMenu.MainMenu, "");
 
             //
@@ -96,6 +101,16 @@ namespace TB_QuestGame
             //
             while (_playingGame)
             {
+
+                //
+                // process all flags, events, and stats
+                //
+
+                UpdateGameStatus();
+                //
+                // get next game action from player
+                //
+
                 travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
 
                 //
@@ -112,7 +127,27 @@ namespace TB_QuestGame
                     case ProspectorAction.EditAccount:
                         editAccount();
                         break;
+                    case ProspectorAction.LookAround:
+                        _gameConsoleView.DisplayLookAround();
+                        break;
+                    case ProspectorAction.Travel:
+                        //
+                        // get new location choice and update the current location property
+                        //
+                        _gamePlayer.CurrentRegionLocationID = _gameConsoleView.DisplayGetNextRegionLocation();
+                        _currentLocation = _gameUniverse.GetRegionLocationById((_gamePlayer).CurrentRegionLocationID);
 
+                        //
+                        // set the game play screen to the current location info format
+                        //
+                        _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(_currentLocation), ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorAction.ProspectorLocationsVisited:
+                        _gameConsoleView.DisplayLocationsVisited();
+                        break;
+                    case ProspectorAction.ListDestinations:
+                        _gameConsoleView.DisplayListOfRegionLocations();
+                        break;
                     case ProspectorAction.Exit:
                         _playingGame = false;
                         break;
@@ -143,6 +178,8 @@ namespace TB_QuestGame
             _gamePlayer.PlayerHealthStatus = prospector.PlayerHealthStatus;
             _gamePlayer.HasFishedHunted = prospector.HasFishedHunted;
             _gamePlayer.PriorKnowledge = prospector.PriorKnowledge;
+
+            _gamePlayer.CurrentRegionLocationID = 1;
         }
 
         private void editAccount()
@@ -176,6 +213,18 @@ namespace TB_QuestGame
                     break;
             }
             _gameConsoleView.DisplayUpdatedTravelerInfo(_gamePlayer);
+        }
+        private void UpdateGameStatus()
+        {
+            if (!_gamePlayer.hasVisited(_currentLocation.RegionLocationID))
+            {
+                //add locations
+                _gamePlayer.RegionLocationsVisited.Add(_currentLocation.RegionLocationID);
+            }
+            _gamePlayer.ExpPoints += _currentLocation.ExperiencePoints;
+
+          
+
         }
         #endregion
     }
