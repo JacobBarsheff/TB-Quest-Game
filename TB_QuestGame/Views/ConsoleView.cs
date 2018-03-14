@@ -443,36 +443,116 @@ namespace TB_QuestGame
                 ConsoleLayout.MapBoxPositionLeft,
                 ConsoleLayout.MapBoxWidth,
                 ConsoleLayout.MapBoxHeight);
+            for (int height = 1; height < ConsoleLayout.MapBoxHeight - 1; height++)
+            {
+            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft+1, ConsoleLayout.MapBoxPositionTop+height);
+            for (int i = 0; i < ConsoleLayout.InventoryBoxWidth-2; i++)
+            {               
+                Console.BackgroundColor = ConsoleColor.DarkGreen;
+                Console.Write(" ");
+                
+            }
+            
+            }
+
+            //Console.BackgroundColor = ConsoleTheme.MapBoxHeaderBackgroundColor;
+            //Console.ForegroundColor = ConsoleTheme.MapBoxHeaderForegroundColor;
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 15, ConsoleLayout.MapBoxPositionTop + 1);
+            //Console.Write(ConsoleWindowHelper.Center("Map", ConsoleLayout.MapBoxWidth - 30));
+            //int startingRow = ConsoleLayout.MapBoxPositionTop + 1;
+            //int row = startingRow;
+            //Console.BackgroundColor = ConsoleTheme.MapBoxBackgroundColor;
+            //Console.ForegroundColor = ConsoleTheme.MapBoxForegroundColor;
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 2, row);
+            //Console.WriteLine(_gameUniverse.RegionLocations[6].CommonName);
+            //Console.WriteLine("Dawson");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 2);
+            //Console.WriteLine("Wilderness");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 24, row +2);
+            //Console.WriteLine("Edmonton");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 4);
+            //Console.WriteLine("Skagway");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 13, row + 4);
+            //Console.WriteLine("Wilderness");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 6);
+            //Console.WriteLine("Wilderness");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 8);
+            //Console.WriteLine("Vancouver");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 19, row + 8);
+            //Console.WriteLine("Wilderness");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 10);
+            //Console.WriteLine("Wilderness");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 7, row + 12);
+            //Console.WriteLine("Seattle");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 10);
+            //Console.WriteLine("N");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 29, row + 11);
+            //Console.WriteLine("E");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 12);
+            //Console.WriteLine("S");
+            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 27, row + 11);
+            //Console.WriteLine("W ");
 
             Console.BackgroundColor = ConsoleTheme.MapBoxHeaderBackgroundColor;
             Console.ForegroundColor = ConsoleTheme.MapBoxHeaderForegroundColor;
             Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 15, ConsoleLayout.MapBoxPositionTop + 1);
             Console.Write(ConsoleWindowHelper.Center("Map", ConsoleLayout.MapBoxWidth - 30));
-
             int startingRow = ConsoleLayout.MapBoxPositionTop + 1;
             int row = startingRow;
             Console.BackgroundColor = ConsoleTheme.MapBoxBackgroundColor;
             Console.ForegroundColor = ConsoleTheme.MapBoxForegroundColor;
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 2, row);
-            Console.WriteLine("Dawson");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 2);
-            Console.WriteLine("Wilderness");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 24, row +2);
-            Console.WriteLine("Edmonton");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 4);
-            Console.WriteLine("Skagway");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 13, row + 4);
-            Console.WriteLine("Wilderness");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 6);
-            Console.WriteLine("Wilderness");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 8);
-            Console.WriteLine("Vancouver");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 19, row + 8);
-            Console.WriteLine("Wilderness");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 10);
-            Console.WriteLine("Wilderness");
-            Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 7, row + 12);
-            Console.WriteLine("Seattle");
+
+
+                for (int index = 0; index < _gameUniverse.RegionLocations.Count ; index++)
+                {   
+                    
+                    // highlight current location
+                    if (_gameTraveler.CurrentRegionLocationID == _gameUniverse.RegionLocations[index].RegionLocationID)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleTheme.MapBoxBackgroundColor;
+                        Console.ForegroundColor = ConsoleTheme.MapBoxForegroundColor;
+                    }
+
+                // if location is on the visited locations list or its the users current location, display it
+                if (_gameTraveler.RegionLocationsVisited.Contains(_gameUniverse.RegionLocations[index].RegionLocationID) || _gameTraveler.CurrentRegionLocationID == _gameUniverse.RegionLocations[index].RegionLocationID)
+                {
+                    Console.SetCursorPosition(_gameUniverse.RegionLocations[index].PositonLeft, _gameUniverse.RegionLocations[index].PositionTop);
+                    Console.WriteLine(_gameUniverse.RegionLocations[index].CommonName);
+                }
+                else
+                {
+                    Console.SetCursorPosition(_gameUniverse.RegionLocations[index].PositonLeft, _gameUniverse.RegionLocations[index].PositionTop);
+                    Console.WriteLine("");
+                }
+
+                // reapply styling....fixes bug that makes mulitple locations red when traveling to loc ID10
+                
+                Console.BackgroundColor = ConsoleTheme.MapBoxBackgroundColor;
+                Console.ForegroundColor = ConsoleTheme.MapBoxForegroundColor;
+
+                foreach (RegionLocation rl in _gameUniverse.RegionLocations)
+                    {
+                        if (rl.RegionLocationID == _gameTraveler.CurrentRegionLocationID)
+                        {
+                            foreach (var locationNum in rl.CanTravelToNext)
+                            {
+                                if (!_gameTraveler.RegionLocationsVisited.Contains(locationNum))
+                                {
+                                    Console.SetCursorPosition(_gameUniverse.RegionLocations[locationNum-1].PositonLeft, _gameUniverse.RegionLocations[locationNum-1].PositionTop);
+                                    Console.WriteLine($"???({locationNum})???");
+                                }
+                            }
+                        }
+                    }
+
+                }
+
             Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 10);
             Console.WriteLine("N");
             Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 29, row + 11);
@@ -690,7 +770,7 @@ namespace TB_QuestGame
             int regionLocationID = 0;
             bool validRegionLocationId = false;
 
-            DisplayGamePlayScreen("Travel", Text.Travel(_gameTraveler, _gameUniverse.RegionLocations), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen($"Travel, Current Location {_gameUniverse.RegionLocations[_gameTraveler.CurrentRegionLocationID -1].CommonName}", Text.Travel(_gameTraveler, _gameUniverse.RegionLocations), ActionMenu.MainMenu, "");
 
             while (!validRegionLocationId)
             {
@@ -721,12 +801,12 @@ namespace TB_QuestGame
                     else
                     {
                         ClearInputBox();
-                        DisplayInputErrorMessage("???It appears you attempting to travel to an inaccessible location. Please try again.");
+                        DisplayInputErrorMessage("It appears you attempting to travel to an inaccessible location. Please try again.");
                     }
                 }
                 else
                 {
-                    DisplayInputErrorMessage($"!!!It appears you entered an{regionLocationID} invalid Space-Time location id. Please try again.");
+                    DisplayInputErrorMessage($"It appears you entered an{regionLocationID} invalid Space-Time location id. Please try again.");
                 }
             }
 

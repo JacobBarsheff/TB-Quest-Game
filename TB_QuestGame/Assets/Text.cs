@@ -257,7 +257,7 @@ namespace TB_QuestGame
                 $"\n" +
                 $"ID".PadRight(10) + "Name".PadRight(30) + "Accessible".PadRight(10) + "\n" +
                 "---".PadRight(10) + "-------------------------".PadRight(30) + "-----------".PadRight(10) + "\n";
-            
+
             string regionLocationList = null;
 
             foreach (RegionLocation rl in regionLocations)
@@ -270,9 +270,19 @@ namespace TB_QuestGame
                         {
                             if (selectedLoc.RegionLocationID == locationNum)
                             {
+                                regionLocationList +=
+                                $"{selectedLoc.RegionLocationID}".PadRight(10);
+                                    if (gametraveler.RegionLocationsVisited.Contains(selectedLoc.RegionLocationID))
+                                {
                                     regionLocationList +=
-                                    $"{selectedLoc.RegionLocationID}".PadRight(10) +
-                                    $"{selectedLoc.CommonName}".PadRight(30) +
+                                    $"{selectedLoc.CommonName}".PadRight(30);
+                                }
+                                else
+                                {
+                                    regionLocationList +=
+                                    $"????????".PadRight(30);
+                                }
+                                    regionLocationList +=
                                     $"{rl.Accessible}".PadRight(10) +
                                     Environment.NewLine;
                             }

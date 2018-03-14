@@ -45,6 +45,8 @@ namespace TB_QuestGame
             ConsoleWindowWidth = ConsoleLayout.WindowWidth;
             ConsoleWindowHeight = ConsoleLayout.WindowHeight;
 
+
+
             //
             // set default values for console window from theme class
             //

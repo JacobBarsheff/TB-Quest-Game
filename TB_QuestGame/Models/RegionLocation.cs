@@ -23,6 +23,21 @@ namespace TB_QuestGame
         private int _pointsToEnter;
         private int _experiencePoints;
         private List<int> _canTravelToNext;
+        private int _postionLeft;
+        private int _positonTop;
+
+        public int PositionTop
+        {
+            get { return _positonTop; }
+            set { _positonTop = value; }
+        }
+
+        public int PositonLeft
+        {
+            get { return _postionLeft; }
+            set { _postionLeft = value; }
+        }
+
 
 
 
