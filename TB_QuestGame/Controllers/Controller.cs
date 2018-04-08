@@ -55,7 +55,13 @@ namespace TB_QuestGame
             _gameConsoleView = new ConsoleView(_gamePlayer, _gameUniverse);
             _playingGame = true;
 
+            //
+            //add initial items to the travelers inventory
+            //
+            _gamePlayer.Inventory.Add(_gameUniverse.GetGameObjectById(1) as ProspectorObject);
+
             Console.CursorVisible = false;
+
         }
 
         /// <summary>
@@ -111,7 +117,17 @@ namespace TB_QuestGame
                 // get next game action from player
                 //
 
-                travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+                //
+                // get next game action from player
+                //
+                if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.MainMenu)
+                {
+                    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+                }
+                else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.AdminMenu)
+                {
+                    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.AdminMenu);
+                }
 
                 //
                 // choose an action based on the user's menu choice
@@ -142,14 +158,40 @@ namespace TB_QuestGame
                         //
                         _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(_currentLocation), ActionMenu.MainMenu, "");
                         break;
+                    case ProspectorAction.ProspectorInventory:
+                        _gameConsoleView.DisplayInventory();
+                        break;
                     case ProspectorAction.ProspectorLocationsVisited:
                         _gameConsoleView.DisplayLocationsVisited();
                         break;
                     case ProspectorAction.ListDestinations:
                         _gameConsoleView.DisplayListOfRegionLocations();
                         break;
+                    case ProspectorAction.ListItems:
+                        _gameConsoleView.DisplayListOfAllGameObjects();
+                        break;
+
+                    case ProspectorAction.AdminMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.AdminMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Admin Menu", "Select an operation from the menu.", ActionMenu.AdminMenu, "");
+                        break;
+
+                    case ProspectorAction.ReturnToMainMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.MainMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(_currentLocation), ActionMenu.MainMenu, "");
+                        break;
                     case ProspectorAction.Exit:
                         _playingGame = false;
+                        break;
+                    case ProspectorAction.LookAt:
+                        LookAtAction();
+                        break;
+                    case ProspectorAction.PickUpItem:
+                        PickUpAction();
+                        break;
+
+                    case ProspectorAction.PutDownItem:
+                        PutDownAction();
                         break;
 
 
@@ -224,6 +266,86 @@ namespace TB_QuestGame
             _gamePlayer.ExpPoints += _currentLocation.ExperiencePoints;
 
           
+
+        }
+        private void LookAtAction()
+        {
+            //
+            // display a list of game objects in space-time location and get a player choice
+            //
+            int gameObjectToLookAtId = _gameConsoleView.DisplayGetGameObjectToLookAt();
+
+            //
+            // display game object info
+            //
+            if (gameObjectToLookAtId != 0)
+            {
+                //
+                // get the game object from the universe
+                //
+                GameObject gameObject = _gameUniverse.GetGameObjectById(gameObjectToLookAtId);
+
+                //
+                // display information for the object chosen
+                //
+                _gameConsoleView.DisplayGameObjectInfo(gameObject);
+            }
+        }
+        /// <summary>
+        /// process the Pick Up action
+        /// </summary>
+        private void PickUpAction()
+        {
+            //
+            // display a list of traveler objects in space-time location and get a player choice
+            //
+            int travelerObjectToPickUpId = _gameConsoleView.DisplayGetTravelerObjectToPickUp();
+
+            //
+            // add the traveler object to traveler's inventory
+            //
+            if (travelerObjectToPickUpId != 0)
+            {
+                //
+                // get the game object from the universe
+                //
+                ProspectorObject travelerObject = _gameUniverse.GetGameObjectById(travelerObjectToPickUpId) as ProspectorObject;
+
+                //
+                // note: traveler object is added to list and the space-time location is set to 0
+                //
+                _gamePlayer.Inventory.Add(travelerObject);
+                travelerObject.RegionLocationId = 0;
+
+                //
+                // display confirmation message
+                //
+                _gameConsoleView.DisplayConfirmTravelerObjectAddedToInventory(travelerObject);
+            }
+        }
+
+        private void PutDownAction()
+        {
+            //
+            // display a list of traveler objects in inventory and get a player choice
+            //
+            int inventoryObjectToPutDownId = _gameConsoleView.DisplayGetInventoryObjectToPutDown();
+
+            //
+            // get the game object from the universe
+            //
+            ProspectorObject travelerObject = _gameUniverse.GetGameObjectById(inventoryObjectToPutDownId) as ProspectorObject;
+
+            //
+            // remove the object from inventory and set the space-time location to the current value
+            //
+            _gamePlayer.Inventory.Remove(travelerObject);
+            travelerObject.RegionLocationId = _gamePlayer.CurrentRegionLocationID;
+
+            //
+            // display confirmation message
+            //
+            _gameConsoleView.DisplayConfirmTravelerObjectRemovedFromInventory(travelerObject);
 
         }
         #endregion

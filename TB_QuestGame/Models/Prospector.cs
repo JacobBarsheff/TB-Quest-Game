@@ -24,11 +24,15 @@ namespace TB_QuestGame
 
         #region FIELDS
         private overallHealth _propspectorHealthStatus;
-        private int _prospectorHealth = 35;
+        private int _prospectorHealth  = 50;
         private bool _knowsAboutKlondike;
         private string _prospectorAddress;
         private List<int> _regionLocationsVisited;
         private int _expPoints;
+        private List<ProspectorObject> _inventory;
+
+ 
+
 
 
 
@@ -71,7 +75,11 @@ namespace TB_QuestGame
             get { return _regionLocationsVisited; }
             set { _regionLocationsVisited = value; }
         }
-
+       public List<ProspectorObject> Inventory
+        {
+            get { return _inventory; }
+            set { _inventory = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -79,11 +87,13 @@ namespace TB_QuestGame
         public Prospector()
         {
             _regionLocationsVisited = new List<int>();
+            _inventory = new List<ProspectorObject>();
         }
 
         public Prospector(string name, Title title, int regionLocationID) : base(name, title)
         {
             _regionLocationsVisited = new List<int>();
+            _inventory = new List<ProspectorObject>();
         }
 
         #endregion

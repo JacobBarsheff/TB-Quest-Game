@@ -11,6 +11,15 @@ namespace TB_QuestGame
     /// </summary>
     public static class ActionMenu
     {
+        public enum CurrentMenu
+        {
+            MissionIntro,
+            InitializeMission,
+            MainMenu,
+            AdminMenu
+        }
+
+        public static CurrentMenu currentMenu = CurrentMenu.MainMenu;
         public static Menu GameIntro = new Menu()
         {
             MenuName = "GameIntro",
@@ -37,13 +46,17 @@ namespace TB_QuestGame
             MenuTitle = "Main Menu",
             MenuChoices = new Dictionary<char, ProspectorAction>()
                 {
-                    { '1', ProspectorAction.ProspectorInfo},
-                    { '2', ProspectorAction.EditAccount},
-                    {'3', ProspectorAction.LookAround},
+                    { 'A', ProspectorAction.ProspectorInfo},
+                    //{ '2', ProspectorAction.EditAccount},
+                    {'2', ProspectorAction.LookAround},
+                    {'3', ProspectorAction.LookAt},
                     {'4', ProspectorAction.Travel},
                     {'5', ProspectorAction.ProspectorLocationsVisited},
-                    {'6', ProspectorAction.ListDestinations},
-                    { '0', ProspectorAction.Exit}
+                    {'6', ProspectorAction.AdminMenu},
+                    {'7', ProspectorAction.PickUpItem},
+                    {'8', ProspectorAction.PutDownItem},
+                    {'9', ProspectorAction.ProspectorInventory},
+                    {'0', ProspectorAction.Exit}
                 }
         };
 
@@ -58,5 +71,16 @@ namespace TB_QuestGame
         //                ProspectorAction.Exit
         //            }
         //};
+        public static Menu AdminMenu = new Menu()
+        {
+            MenuName = "AdminMenu",
+            MenuTitle = "Admin Menu",
+            MenuChoices = new Dictionary<char, ProspectorAction>()
+                {
+                    { '1', ProspectorAction.ListDestinations },
+                    { '2', ProspectorAction.ListItems},
+                    { '0', ProspectorAction.ReturnToMainMenu }
+                }
+        };
     }
 }

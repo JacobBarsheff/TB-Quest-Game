@@ -152,6 +152,12 @@ namespace TB_QuestGame
             bool validResponse = false;
             integerChoice = 0;
 
+            //
+            // validate on range if either min or max value are not 0
+            //
+
+            bool validateRange = (minimumValue != 0 || maximumValue != 0);
+
             DisplayInputBoxPrompt(prompt);
             while (!validResponse)
             {
@@ -390,22 +396,35 @@ namespace TB_QuestGame
             //
             // display the text for the health box
             //
-            Console.BackgroundColor = ConsoleTheme.HealthBackgroundColor;
             Console.ForegroundColor = ConsoleTheme.HealthBoxForegroundColor;
+            Console.BackgroundColor = ConsoleTheme.SplashScreenBackgroundColor;
+
+
+            Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, ConsoleLayout.HealthBoxPositionTop + 2);
+            Console.Write($"Health { _gameTraveler.ProspectorHealth}/100");
+
+
+
+
             int startingRow = ConsoleLayout.HealthBoxPositionTop + 3;
             int row = startingRow;
             Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, row);
-            Console.Write(ConsoleWindowHelper.Center(healthBar, ConsoleLayout.HealthBoxWidth - 4 - (Math.Abs(_gameTraveler.ProspectorHealth - 35))));
-            if (_gameTraveler.ProspectorHealth == 35)
-            {
- 
-            }
-            else
-            {
+            decimal convertedPlayerHealth = (((decimal)_gameTraveler.ProspectorHealth / (decimal)100) * (decimal)33);
+            int playerHealthRemaining = 33 - (int)convertedPlayerHealth;
 
-            Console.BackgroundColor = ConsoleColor.DarkRed;
-            Console.Write(ConsoleWindowHelper.Center(healthBar, ConsoleLayout.HealthBoxWidth - 4 - (_gameTraveler.ProspectorHealth - 2)));
+            Console.BackgroundColor = ConsoleTheme.HealthBackgroundColor;            
+            for (int i = 0; i < (convertedPlayerHealth -1); i++)
+            {
+                Console.Write(" ");
             }
+            for (int i = 0; i < playerHealthRemaining; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+                Console.Write(" ");
+            }
+
+
+
 
             //display exp
             Console.BackgroundColor = ConsoleTheme.EXPBackgroundColor;
@@ -752,7 +771,7 @@ namespace TB_QuestGame
         public void DisplayListOfRegionLocations()
         {
             DisplayGamePlayScreen("List: Region Locations", Text.ListRegionLocations
-                (_gameUniverse.RegionLocations), ActionMenu.MainMenu, "");
+                (_gameUniverse.RegionLocations), ActionMenu.AdminMenu, "");
         }
 
         #region ----- display responses to menu action choices -----
@@ -763,6 +782,16 @@ namespace TB_QuestGame
             RegionLocation currentRegionLocation = _gameUniverse.GetRegionLocationById
                 (_gameTraveler.CurrentRegionLocationID);
             DisplayGamePlayScreen("Current Location", Text.LookAround(currentRegionLocation), ActionMenu.MainMenu, "");
+
+            // get list of objects in current region location
+
+            List<GameObject> gameObjectsInCurrentRegionLocation = _gameUniverse.GetGameObjectsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
+
+            string messageBoxText = Text.LookAround(currentRegionLocation) + Environment.NewLine + Environment.NewLine;
+            messageBoxText += Text.GameObjectsChooseList(gameObjectsInCurrentRegionLocation);
+
+            DisplayGamePlayScreen("Current Location", messageBoxText, ActionMenu.MainMenu, "");
+
         }
 
         public int DisplayGetNextRegionLocation()
@@ -824,6 +853,166 @@ namespace TB_QuestGame
 
             DisplayGamePlayScreen("Regions Visited", Text.VisitedLocations(visitedRegionLocations), ActionMenu.MainMenu, "");
 
+        }
+        public void DisplayListOfAllGameObjects()
+        {
+            DisplayGamePlayScreen("List: Game Objects", Text.ListAllGameObjects(_gameUniverse.GameObjects), ActionMenu.AdminMenu, "");
+        }
+        public int DisplayGetGameObjectToLookAt()
+        {
+            int gameObjectId = 0;
+            bool validGameObjectId = false;
+
+            //
+            //get a list of game objects in the current region-location
+            //
+
+            List<GameObject> gameObjectsinRegionLocation = _gameUniverse.GetGameObjectsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
+            if (gameObjectsinRegionLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Look at a Object", Text.GameObjectsChooseList(gameObjectsinRegionLocation), ActionMenu.MainMenu, "");
+
+                while (!validGameObjectId)
+                {
+                    //
+                    // get an integer from the player
+                    //
+                    GetInteger($"Enter the Id number of the object you wish to look at: ", 0, 10, out gameObjectId);
+
+                    //
+                    // validate integer as a valid game object id and in current location
+                    //
+                    if (_gameUniverse.IsValidGameObjectByLocationId(gameObjectId, _gameTraveler.CurrentRegionLocationID))
+                    {
+                        validGameObjectId = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid game object id. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Look at a Object", "It appears there are no game objects here.", ActionMenu.MainMenu, "");
+            }
+
+            return gameObjectId;
+
+
+
+        }
+        public void DisplayGameObjectInfo(GameObject gameObject)
+        {
+            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.MainMenu, "");
+        }
+        public void DisplayInventory()
+        {
+            DisplayGamePlayScreen("Current Inventory", Text.CurrentInventory(_gameTraveler.Inventory), ActionMenu.MainMenu, "");
+        }
+        public int DisplayGetTravelerObjectToPickUp()
+        {
+            int gameObjectId = 0;
+            bool validGameObjectId = false;
+
+            //
+            // get a list of traveler objects in the current space-time location
+            //
+            List<ProspectorObject> travelerObjectsInSpaceTimeLocation = _gameUniverse.GetTravelerObjectsBySpaceTimeLocationId(_gameTraveler.CurrentRegionLocationID);
+
+            if (travelerObjectsInSpaceTimeLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", Text.GameObjectsChooseList(travelerObjectsInSpaceTimeLocation), ActionMenu.MainMenu, "");
+
+                while (!validGameObjectId)
+                {
+                    //
+                    // get an integer from the player
+                    //
+                    GetInteger($"Enter the Id number of the object you wish to add to your inventory: ", 0, 0, out gameObjectId);
+
+                    //
+                    // validate integer as a valid game object id and in current location
+                    //
+                    if (_gameUniverse.IsValidTravelerObjectByLocationId(gameObjectId, _gameTraveler.CurrentRegionLocationID))
+                    {
+                        ProspectorObject travelerObject = _gameUniverse.GetGameObjectById(gameObjectId) as ProspectorObject;
+                        if (travelerObject.CanInventory)
+                        {
+                            validGameObjectId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("It appears you may not inventory that object. Please try again.");
+                        }
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid game object id. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", "It appears there are no game objects here.", ActionMenu.MainMenu, "");
+            }
+
+            return gameObjectId;
+        }
+        public int DisplayGetInventoryObjectToPutDown()
+        {
+            int travelerObjectId = 0;
+            bool validInventoryObjectId = false;
+
+            if (_gameTraveler.Inventory.Count > 0)
+            {
+                DisplayGamePlayScreen("Put Down Game Object", Text.GameObjectsChooseList(_gameTraveler.Inventory), ActionMenu.MainMenu, "");
+
+                while (!validInventoryObjectId)
+                {
+                    //
+                    // get an integer from the player
+                    //
+                    GetInteger($"Enter the Id number of the object you wish to remove from your inventory: ", 0, 0, out travelerObjectId);
+
+                    //
+                    // find object in inventory
+                    // note: LINQ used, but a foreach loop may also be used 
+                    //
+                    ProspectorObject objectToPutDown = _gameTraveler.Inventory.FirstOrDefault(o => o.Id == travelerObjectId);
+
+                    //
+                    // validate object in inventory
+                    //
+                    if (objectToPutDown != null)
+                    {
+                        validInventoryObjectId = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered the Id of an object not in the inventory. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", "It appears there are no objects currently in inventory.", ActionMenu.MainMenu, "");
+            }
+
+            return travelerObjectId;
+        }
+        public void DisplayConfirmTravelerObjectAddedToInventory(ProspectorObject objectAddedToInventory)
+        {
+            DisplayGamePlayScreen("Pick Up Game Object", $"The {objectAddedToInventory.Name} has been added to your inventory.", ActionMenu.MainMenu, "");
+        }
+
+        public void DisplayConfirmTravelerObjectRemovedFromInventory(ProspectorObject objectRemovedFromInventory)
+        {
+            DisplayGamePlayScreen("Put Down Game Object", $"The {objectRemovedFromInventory.Name} has been removed from your inventory.", ActionMenu.MainMenu, "");
         }
         #endregion
 
