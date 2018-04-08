@@ -477,6 +477,85 @@ namespace TB_QuestGame
 
             return messageBoxText;
         }
+        public static string CurrentInventorySell(IEnumerable<ProspectorObject> inventory)
+        {
+            string messageBoxText = "";
+
+            //
+            // display table header
+            //
+            messageBoxText =
+            "#".PadRight(5) +
+            "ID".PadRight(10) +
+            "Name".PadRight(30) +
+            "Type".PadRight(10) +
+            "\n" +
+            "---".PadRight(10) +
+            "----------------------------".PadRight(30) +
+            "----------------------".PadRight(10) +
+            "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string inventoryObjectRows = null;
+            int index = 1;
+            foreach (ProspectorObject inventoryObject in inventory)
+            {
+                inventoryObjectRows +=
+                    $"{inventoryObject.Id}".PadRight(10) +
+                    $"{inventoryObject.Name}".PadRight(30) +
+                    $"{inventoryObject.Type}".PadRight(10) +
+                    Environment.NewLine;
+                index += 1;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            return messageBoxText;
+        }
+
+        public static string DisplayShopItems(List<GameObject> shopItems)
+        {
+            string messageBoxText = "";
+
+            //
+            // display table header
+            //
+            messageBoxText =
+            "#".PadRight(5) +
+            "ID".PadRight(10) +
+            "Name".PadRight(20) +
+            "Type".PadRight(10) +
+            "Cost".PadRight(10) +
+            "\n" +
+            "---".PadRight(10) +
+            "----------------------------".PadRight(30) +
+            "----------------------".PadRight(10) +
+            "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string inventoryObjectRows = null;
+            int index = 1;
+            foreach (ProspectorObject inventoryObject in shopItems)
+            {
+                inventoryObjectRows +=
+                    $"{index}".PadRight(5) +
+                    $"{inventoryObject.Id}".PadRight(10) +
+                    $"{inventoryObject.Name}".PadRight(20) +
+                    $"{inventoryObject.Type}".PadRight(10) +
+                    $"{inventoryObject.Value}".PadRight(10) +
+                    Environment.NewLine;
+                index += 1;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            return messageBoxText;
+
+        }
 
         #endregion
     }

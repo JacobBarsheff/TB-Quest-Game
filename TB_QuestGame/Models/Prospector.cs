@@ -24,18 +24,13 @@ namespace TB_QuestGame
 
         #region FIELDS
         private overallHealth _propspectorHealthStatus;
-        private int _prospectorHealth  = 50;
+        private int _prospectorHealth  = 100;
         private bool _knowsAboutKlondike;
         private string _prospectorAddress;
         private List<int> _regionLocationsVisited;
         private int _expPoints;
         private List<ProspectorObject> _inventory;
-
- 
-
-
-
-
+        private int _money = 100;
 
         #endregion
 
@@ -46,6 +41,11 @@ namespace TB_QuestGame
             set { _expPoints = value; }
         }
 
+        public int Money
+        {
+            get { return _money; }
+            set { _money = value; }
+        }
 
 
         public int ProspectorHealth

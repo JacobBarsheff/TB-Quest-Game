@@ -193,7 +193,9 @@ namespace TB_QuestGame
                     case ProspectorAction.PutDownItem:
                         PutDownAction();
                         break;
-
+                    case ProspectorAction.Shop:
+                        Shop();
+                        break;
 
                     default:
                         break;
@@ -230,6 +232,7 @@ namespace TB_QuestGame
             Prospector prospector = _gameConsoleView.DisplayPlayerEditPrompt(playerChoice);
             switch (playerChoice)
             {
+                case 0:break;
                 case 1:
                     _gamePlayer.Name = prospector.Name;
                     break;
@@ -314,13 +317,25 @@ namespace TB_QuestGame
                 //
                 // note: traveler object is added to list and the space-time location is set to 0
                 //
+                if (travelerObject.Type == ProspectorObjectType.Treasure)
+                {
+                    _gamePlayer.Money += travelerObject.Value;
+                    _gameConsoleView.DisplayConfirmTravelerObjectAddedToMoney(travelerObject);
+                    Random rnd = new Random();
+                    travelerObject.RegionLocationId = rnd.Next(1, _gameUniverse.RegionLocations.Count);
+                }
+                else
+                {
                 _gamePlayer.Inventory.Add(travelerObject);
                 travelerObject.RegionLocationId = 0;
+                _gameConsoleView.DisplayConfirmTravelerObjectAddedToInventory(travelerObject);
+                }
+
 
                 //
                 // display confirmation message
                 //
-                _gameConsoleView.DisplayConfirmTravelerObjectAddedToInventory(travelerObject);
+
             }
         }
 
@@ -346,6 +361,36 @@ namespace TB_QuestGame
             // display confirmation message
             //
             _gameConsoleView.DisplayConfirmTravelerObjectRemovedFromInventory(travelerObject);
+
+        }
+        private void Shop()
+        {
+            int userChoice = _gameConsoleView.DisplayShopOptions();
+            switch (userChoice)
+            {
+                case 1:
+                    
+                    GameObject itemToBuy = _gameConsoleView.DisplayBuy();
+                    ProspectorObject travelerObject = itemToBuy as ProspectorObject;
+                    _gamePlayer.Inventory.Add(travelerObject);
+                    travelerObject.RegionLocationId = 0;
+                    _gamePlayer.Money -= travelerObject.Value;
+                    _gameConsoleView.DisplayConfirmationPurchase(travelerObject);
+                    break;
+                case 2:
+                    GameObject item = _gameConsoleView.DisplaySell();
+                    ProspectorObject itemtoSell = item as ProspectorObject;
+                    _gamePlayer.Inventory.Remove(itemtoSell);
+                    _gamePlayer.Money += itemtoSell.Value;
+                    _gameConsoleView.DisplayConfirmationSell(itemtoSell);
+                    break;
+                case 3:
+                    _gameConsoleView.DisplayNoShop();
+                    break;
+                default:
+                    _gameConsoleView.DisplayNoShop();
+                    break;
+            }
 
         }
         #endregion

@@ -13,7 +13,7 @@ namespace TB_QuestGame
         Weapon,
         Treasure,
         Information,
-        Wood,
+        Resource,
         String,
         Tool
     }

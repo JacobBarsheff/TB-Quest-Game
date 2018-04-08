@@ -47,7 +47,7 @@ namespace TB_QuestGame
             MenuChoices = new Dictionary<char, ProspectorAction>()
                 {
                     { 'A', ProspectorAction.ProspectorInfo},
-                    //{ '2', ProspectorAction.EditAccount},
+                    { '1', ProspectorAction.EditAccount},
                     {'2', ProspectorAction.LookAround},
                     {'3', ProspectorAction.LookAt},
                     {'4', ProspectorAction.Travel},
@@ -56,6 +56,7 @@ namespace TB_QuestGame
                     {'7', ProspectorAction.PickUpItem},
                     {'8', ProspectorAction.PutDownItem},
                     {'9', ProspectorAction.ProspectorInventory},
+                    {'S', ProspectorAction.Shop},
                     {'0', ProspectorAction.Exit}
                 }
         };

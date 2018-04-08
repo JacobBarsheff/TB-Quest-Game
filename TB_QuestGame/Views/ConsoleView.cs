@@ -147,41 +147,50 @@ namespace TB_QuestGame
         /// get an integer value from the user
         /// </summary>
         /// <returns>integer value</returns>
-        public bool GetInteger(string prompt, int minimumValue, int maximumValue, out int integerChoice)
+        private bool GetInteger(string prompt, int minimumValue, int maximumValue, out int integerChoice)
         {
             bool validResponse = false;
             integerChoice = 0;
 
             //
-            // validate on range if either min or max value are not 0
+            // validate on range if either minimumValue and maximumValue are not 0
             //
-
             bool validateRange = (minimumValue != 0 || maximumValue != 0);
 
             DisplayInputBoxPrompt(prompt);
             while (!validResponse)
-            {
 
+
+            {
                 if (int.TryParse(Console.ReadLine(), out integerChoice))
                 {
-                    if (integerChoice >= minimumValue && integerChoice <= maximumValue)
+                    if (validateRange)
                     {
-                        validResponse = true;
+                        if (integerChoice >= minimumValue && integerChoice <= maximumValue)
+                        {
+                            validResponse = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
+                            DisplayInputBoxPrompt(prompt);
+                        }
                     }
                     else
                     {
-                        ClearInputBox();
-                        DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
-                        DisplayInputBoxPrompt(prompt);
+                        validResponse = true;
                     }
                 }
                 else
                 {
                     ClearInputBox();
-                    DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
+                    DisplayInputErrorMessage($"You must enter an integer value. Please try again.");
                     DisplayInputBoxPrompt(prompt);
                 }
             }
+
+            Console.CursorVisible = false;
 
             return true;
         }
@@ -435,6 +444,12 @@ namespace TB_QuestGame
             Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, 8);
             Console.Write($"Current XP: {_gameTraveler.ExpPoints} ");
 
+            Console.ForegroundColor = ConsoleTheme.HealthBoxForegroundColor;
+            Console.BackgroundColor = ConsoleTheme.SplashScreenBackgroundColor;
+
+
+            Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, 9);
+            Console.Write($"Money: ${ _gameTraveler.Money}");
 
 
 
@@ -720,13 +735,17 @@ namespace TB_QuestGame
             DisplayGamePlayScreen("Adventure Prep - Account Edit", Text.DisplayAccountInfo(_gameTraveler), ActionMenu.MainMenu, "");
 
             int playerChoice;
-            GetInteger("Enter a Number:", 1, 7, out playerChoice);
+            GetInteger("Enter a Number, PRESS (0) TO EXIT:", 0, 7, out playerChoice);
             ClearInputBox();
             return playerChoice;
         }
         public Prospector DisplayPlayerEditPrompt(int playerChoice) { 
             switch (playerChoice)
-            { case 1:
+              
+            {
+                case 0:
+                    break;
+                case 1:
                     DisplayInputBoxPrompt($"Enter Your New Name: ");
                     _gameTraveler.Name = GetString();
                     break;
@@ -877,7 +896,7 @@ namespace TB_QuestGame
                     //
                     // get an integer from the player
                     //
-                    GetInteger($"Enter the Id number of the object you wish to look at: ", 0, 10, out gameObjectId);
+                    GetInteger($"Enter the Id number of the object you wish to look at: ", 0, 0, out gameObjectId);
 
                     //
                     // validate integer as a valid game object id and in current location
@@ -1009,10 +1028,65 @@ namespace TB_QuestGame
         {
             DisplayGamePlayScreen("Pick Up Game Object", $"The {objectAddedToInventory.Name} has been added to your inventory.", ActionMenu.MainMenu, "");
         }
+        public void DisplayConfirmTravelerObjectAddedToMoney(ProspectorObject objectAddedToInventory)
+        {
+            DisplayGamePlayScreen("Pick Up Treasure", $"The {objectAddedToInventory.Name} has been added to your wallet!", ActionMenu.MainMenu, "");
+        }
 
         public void DisplayConfirmTravelerObjectRemovedFromInventory(ProspectorObject objectRemovedFromInventory)
         {
             DisplayGamePlayScreen("Put Down Game Object", $"The {objectRemovedFromInventory.Name} has been removed from your inventory.", ActionMenu.MainMenu, "");
+        }
+        public int DisplayShopOptions()
+        {
+            DisplayGamePlayScreen("Weclome to the Store!", "Would you like to BUY(1) or SELL(2) items?", ActionMenu.MainMenu, "");
+            int userChoice;
+            GetInteger($"Please press (1) to BUY and (2) to SELL and (3) to EXIT", 1, 3, out userChoice);
+
+            return userChoice;
+        }
+        public GameObject DisplayBuy()
+        {
+            Random rnd = new Random();
+            int num = rnd.Next(1, 5);
+            List<GameObject> shopItems = new List<GameObject>();
+            for (int i = 0; i < num; i++)
+            {
+                Random rnd2 = new Random();
+                int num2 = rnd.Next(1, _gameUniverse.GameObjects.Count());
+                shopItems.Add(_gameUniverse.GetGameObjectById(num2));
+            }
+
+
+            DisplayGamePlayScreen("Weclome to the Store!", Text.DisplayShopItems(shopItems), ActionMenu.MainMenu, "");
+            int userChoice = 0;
+            GetInteger($"Enter the Item Number you would like to buy", 1, shopItems.Count, out userChoice);
+
+
+            return shopItems[userChoice - 1];
+            
+
+
+        }
+        public void DisplayConfirmationPurchase(ProspectorObject itembought)
+        {
+            DisplayGamePlayScreen("Purchase Complete!", $"You bought {itembought.Name} for ${itembought.Value}.00. You have ${_gameTraveler.Money} left", ActionMenu.MainMenu, "");
+        }
+        public void DisplayConfirmationSell(ProspectorObject itemsold)
+        {
+            DisplayGamePlayScreen("Purchase Complete!", $"You sold {itemsold.Name} for ${itemsold.Value}.00. You have ${_gameTraveler.Money} left", ActionMenu.MainMenu, "");
+        }
+        public void DisplayNoShop()
+        {
+            DisplayGamePlayScreen("Shop Canceled", $"Please select a menu option on the right!", ActionMenu.MainMenu, "");
+        }
+        public GameObject DisplaySell()
+        {
+            DisplayGamePlayScreen("Current Inventory", Text.CurrentInventorySell(_gameTraveler.Inventory), ActionMenu.MainMenu, "");
+            int userChoice = 0;
+            GetInteger($"Enter the Item Number you would like to sell", 0, _gameTraveler.Inventory.Count, out userChoice);
+
+            return _gameTraveler.Inventory[userChoice - 1];
         }
         #endregion
 
