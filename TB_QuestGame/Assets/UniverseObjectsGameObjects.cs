@@ -22,19 +22,24 @@ namespace TB_QuestGame
                 Value = 5,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 5,
+                PickUpMessage = "You pick up a rusty shovel, hey, at least its free.",
+                PutDownMessage = "You set down a rusty shovel. "
+                
             },
             new ProspectorObject
             {
                 Id = 2,
                 Name = "String",
-                RegionLocationId = 1,
+                RegionLocationId = 2,
                 Description = "A spool of some string, may be useful!",
                 Type = ProspectorObjectType.Tool,
                 Value = 2,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 5
             },
             new ProspectorObject
             {
@@ -47,6 +52,7 @@ namespace TB_QuestGame
                 CanInventory = true,
                 IsConsumable = false,
                 IsVisible = true,
+                ExperiencePoints = 10
                 
             },
             new ProspectorObject
@@ -59,7 +65,9 @@ namespace TB_QuestGame
                 Value = 5,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 15
+                
             },
             new ProspectorObject
             {
@@ -71,7 +79,8 @@ namespace TB_QuestGame
                 Value = 55,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 10
             },
             new ProspectorObject
             {
@@ -83,7 +92,8 @@ namespace TB_QuestGame
                 Value = 15,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 10
             },
             new ProspectorObject
             {
@@ -95,7 +105,9 @@ namespace TB_QuestGame
                 Value = 2,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 5
+                
             },
              new ProspectorObject
             {
@@ -107,7 +119,8 @@ namespace TB_QuestGame
                 Value = 2,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 5
             },
             new ProspectorObject
             {
@@ -119,7 +132,9 @@ namespace TB_QuestGame
                 Value = 2,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 5
+                
             },
 
             new ProspectorObject
@@ -132,7 +147,8 @@ namespace TB_QuestGame
                 Value = 15,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                IsVisible = true,
+                ExperiencePoints = 10
             },
             new ProspectorObject
             {
@@ -144,6 +160,7 @@ namespace TB_QuestGame
                 Value = 15,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 10,
                 IsVisible = true
             },
             new ProspectorObject
@@ -156,6 +173,7 @@ namespace TB_QuestGame
                 Value = 25,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 5,
                 IsVisible = true
             },
             new ProspectorObject
@@ -168,6 +186,7 @@ namespace TB_QuestGame
                 Value = 25,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 5,
                 IsVisible = true
             },
             new ProspectorObject
@@ -180,6 +199,7 @@ namespace TB_QuestGame
                 Value = 25,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 5,
                 IsVisible = true
             },
             new ProspectorObject
@@ -192,6 +212,7 @@ namespace TB_QuestGame
                 Value = 35,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 20,
                 IsVisible = true
             },
 
@@ -205,6 +226,7 @@ namespace TB_QuestGame
                 Value = 35,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 20,
                 IsVisible = true
             },
             new ProspectorObject
@@ -217,6 +239,7 @@ namespace TB_QuestGame
                 Value = 5,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 5,
                 IsVisible = true
             },
             new ProspectorObject
@@ -229,6 +252,7 @@ namespace TB_QuestGame
                 Value = 5,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 5,
                 IsVisible = true
             },
 
@@ -242,47 +266,51 @@ namespace TB_QuestGame
                 Value = 5,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
-            },
-            new ProspectorObject
-            {
-                Id = 19,
-                Name = "First Aid Kit",
-                RegionLocationId = 5,
-                Description = "An assortment of bandages, gauze, and some pain killers.",
-                Type = ProspectorObjectType.Medicine,
-                Value = 15,
-                CanInventory = true,
-                IsConsumable = false,
+                ExperiencePoints = 5,
                 IsVisible = true
             },
             new ProspectorObject
             {
                 Id = 20,
-                Name = "First Aid Kit",
+                Name = "FirstAidKit",
                 RegionLocationId = 8,
                 Description = "An assortment of bandages, gauze, and some pain killers.",
                 Type = ProspectorObjectType.Medicine,
                 Value = 15,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 10,
                 IsVisible = true
             },
             new ProspectorObject
             {
                 Id = 21,
                 Name = "First Aid Kit",
-                RegionLocationId = 6,
+                RegionLocationId = 1,
                 Description = "An assortment of bandages, gauze, and some pain killers.",
                 Type = ProspectorObjectType.Medicine,
-                Value = 15,
+                Value = 115,
                 CanInventory = true,
                 IsConsumable = false,
+                ExperiencePoints = 10,
+                IsVisible = true
+            },
+                        new ProspectorObject
+            {
+                Id = 22,
+                Name = "Cough Medicine",
+                RegionLocationId = 1,
+                Description = "An small bottle of cough medicine. Looks to be expired.",
+                Type = ProspectorObjectType.Medicine,
+                Value = -15,
+                CanInventory = true,
+                IsConsumable = false,
+                ExperiencePoints = 10,
                 IsVisible = true
             },
             new ProspectorObject
             {
-                Id = 22,
+                Id = 23,
                 Name = "Gold Coins",
                 RegionLocationId = 1,
                 Description = "Looks to be 10 gold coins! Worth 100!",
@@ -290,8 +318,27 @@ namespace TB_QuestGame
                 Value = 100,
                 CanInventory = true,
                 IsConsumable = false,
-                IsVisible = true
+                ExperiencePoints = 25,
+                IsVisible = true,
+                PickUpMessage = "You have added 100 gold coins to your wallet!!!"
+                
             },
+                new ProspectorObject
+            {
+                Id = 24,
+                Name = "Message In A Bottle",
+                RegionLocationId = 1,
+                Description = "Looks to be a piece of paper in a bottle",
+                Type = ProspectorObjectType.Information,
+                Value = 0,
+                CanInventory = true,
+                IsConsumable = false,
+                ExperiencePoints = 25,
+                IsVisible = true,
+                PickUpMessage = "The key to riches lies in klondike. HEAD NORTH NOW."
+
+            }
+
 
 
 

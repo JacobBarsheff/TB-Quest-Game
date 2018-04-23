@@ -12,6 +12,8 @@ namespace TB_QuestGame
     public enum ProspectorAction
     {
         None,
+        WieldItem,
+        ConsumeItem,
         EditAccount,
         MissionSetup,
         LookAround,
@@ -28,9 +30,14 @@ namespace TB_QuestGame
         ListDestinations,
         ListItems,
         ListTreasures,
+        ListNonPlayableCharacters,
+        TalkTo,
+        SellTo,
         Shop,
         AdminMenu,
+        Interact,
         ReturnToMainMenu,
+        ManageInventory,
         Exit
     }
 }

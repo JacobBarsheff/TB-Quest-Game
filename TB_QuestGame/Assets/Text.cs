@@ -477,6 +477,7 @@ namespace TB_QuestGame
 
             return messageBoxText;
         }
+
         public static string CurrentInventorySell(IEnumerable<ProspectorObject> inventory)
         {
             string messageBoxText = "";
@@ -486,13 +487,12 @@ namespace TB_QuestGame
             //
             messageBoxText =
             "#".PadRight(5) +
-            "ID".PadRight(10) +
-            "Name".PadRight(30) +
-            "Type".PadRight(10) +
+            "Name".PadRight(20) +
+            "Offer".PadRight(10) +
             "\n" +
-            "---".PadRight(10) +
-            "----------------------------".PadRight(30) +
-            "----------------------".PadRight(10) +
+            "---".PadRight(5) +
+            "--------------".PadRight(20) +
+            "------".PadRight(10) +
             "\n";
 
             //
@@ -503,10 +503,12 @@ namespace TB_QuestGame
             foreach (ProspectorObject inventoryObject in inventory)
             {
                 inventoryObjectRows +=
-                    $"{inventoryObject.Id}".PadRight(10) +
-                    $"{inventoryObject.Name}".PadRight(30) +
-                    $"{inventoryObject.Type}".PadRight(10) +
+                    $"{index}".PadRight(5) +
+                    $"{inventoryObject.Name}".PadRight(20) +
+                    $"{(int)(inventoryObject.Value*.5)}".PadRight(10) +
                     Environment.NewLine;
+                    
+
                 index += 1;
             }
 
@@ -515,7 +517,7 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string DisplayShopItems(List<GameObject> shopItems)
+        public static string DisplayShopItems(List<GameObject> shopItems, double itemPercent)
         {
             string messageBoxText = "";
 
@@ -524,14 +526,14 @@ namespace TB_QuestGame
             //
             messageBoxText =
             "#".PadRight(5) +
-            "ID".PadRight(10) +
             "Name".PadRight(20) +
             "Type".PadRight(10) +
             "Cost".PadRight(10) +
             "\n" +
-            "---".PadRight(10) +
-            "----------------------------".PadRight(30) +
-            "----------------------".PadRight(10) +
+            "---".PadRight(5) +
+            "-----------".PadRight(20) +
+            "--------".PadRight(10) +
+            "------".PadRight(10) +
             "\n";
 
             //
@@ -543,10 +545,10 @@ namespace TB_QuestGame
             {
                 inventoryObjectRows +=
                     $"{index}".PadRight(5) +
-                    $"{inventoryObject.Id}".PadRight(10) +
                     $"{inventoryObject.Name}".PadRight(20) +
                     $"{inventoryObject.Type}".PadRight(10) +
                     $"{inventoryObject.Value}".PadRight(10) +
+                    //$"{inventoryObject.Value} x {(itemPercent)*(.1)}% = {(int)(inventoryObject.Value*(itemPercent*.1))}".PadRight(10) +
                     Environment.NewLine;
                 index += 1;
             }
@@ -556,7 +558,78 @@ namespace TB_QuestGame
             return messageBoxText;
 
         }
+        public static string ListAllNpcObjects(IEnumerable<Npc> npcObjects)
+        {
+            //
+            // display table name and column headers
+            //
+            string messageBoxText =
+                "NPC Objects\n" +
+                "\n" +
+             //
+             //display table header
+             //
+             "ID".PadRight(10) +
+             "Name".PadRight(30) +
+             "Region Location Id".PadRight(10) + "\n" +
+             "------".PadRight(10) +
+             "--------------------".PadRight(30) +
+             "--------------------".PadRight(10) + "\n";
 
+            //
+            //display all traveler objects in rows
+            //
+            string npcObjectRows = null;
+
+            foreach (Npc npcObject in npcObjects)
+            {
+                npcObjectRows +=
+                    $"{npcObject.Id}".PadRight(10) +
+                    $"{npcObject.Name}".PadRight(30) +
+                    $"{npcObject.CurrentRegionLocationID}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += npcObjectRows;
+            return messageBoxText;
+
+        }
+        public static string NpcsChooseList(IEnumerable<Npc> npcObjects)
+        {
+            //
+            // display table name and column headers
+            //
+            string messageBoxText =
+                "NPCs\n" +
+                "\n" +
+             //
+             //display table header
+             //
+             "ID".PadRight(10) +
+             "Name".PadRight(30) + "\n" +
+
+
+             "------".PadRight(10) +
+             "--------------------".PadRight(30) +"\n";
+
+
+            //
+            //display all traveler objects in rows
+            //
+            string npcRows = null;
+
+            foreach (Npc npcObject in npcObjects)
+            {
+                npcRows +=
+                    $"{npcObject.Id}".PadRight(10) +
+                    $"{npcObject.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += npcRows;
+            return messageBoxText;
+
+        }
         #endregion
     }
 }

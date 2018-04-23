@@ -18,9 +18,14 @@ namespace TB_QuestGame
         //
         private List<RegionLocation> _regionLocations;
         private List<GameObject> _gameObjects;
+        private List<Npc> _npcs;
 
 
-
+        public List<Npc> Npcs
+        {
+            get { return _npcs; }
+            set { _npcs = value; }
+        }
 
         public List<RegionLocation> RegionLocations
         {
@@ -59,6 +64,7 @@ namespace TB_QuestGame
         {
             _regionLocations = UniverseObjects.RegionLocations;
             _gameObjects = UniverseObjects.gameObjects;
+            _npcs = UniverseObjects.Npcs;
         }
             #endregion
 
@@ -289,6 +295,68 @@ namespace TB_QuestGame
 
             return travelerObjects;
         }
+
+        public bool IsValidNpcByLocation(int npcId, int currentRegionLocation)
+        {
+            List<int> npcIds = new List<int>();
+
+            foreach (Npc npc in _npcs)
+            {
+                if(npc.CurrentRegionLocationID == currentRegionLocation)
+                {
+                    npcIds.Add(npc.Id);
+                }
+            }
+
+            if (npcIds.Contains(npcId))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public Npc GetNpcById( int Id)
+        {
+            Npc npcToReturn = null;
+
+
+            foreach (Npc npc in _npcs)
+            {
+                if (npc.Id == Id)
+                {
+                    npcToReturn = npc;
+                }
+            }
+
+            if(npcToReturn == null)
+            {
+                string feedBackMessage = $"The NPC ID {Id} does not exist :(";
+                throw new ArgumentException(feedBackMessage, Id.ToString());
+            }
+
+            return npcToReturn;
+        }
+
+        public List<Npc> GetNpcsByRegionLocationId(int regionLocation)
+        {
+            List<Npc> npcs = new List<Npc>();
+
+
+            foreach (Npc npc in _npcs)
+            {
+                if(npc.CurrentRegionLocationID == regionLocation)
+                {
+                    npcs.Add(npc);
+                }
+            }
+
+            return npcs;
+
+        }
+
         #endregion
     }
 }

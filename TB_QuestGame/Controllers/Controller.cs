@@ -54,6 +54,16 @@ namespace TB_QuestGame
             _gameUniverse = new Universe();
             _gameConsoleView = new ConsoleView(_gamePlayer, _gameUniverse);
             _playingGame = true;
+            ProspectorObject prospectorObject;
+
+            foreach (GameObject gameObject in _gameUniverse.GameObjects)
+            {
+                if (gameObject is ProspectorObject)
+                {
+                    prospectorObject = gameObject as ProspectorObject;
+                    prospectorObject.objectAddedToInventory += HandleObjectAddedToInventory;
+                }
+            }
 
             //
             //add initial items to the travelers inventory
@@ -62,6 +72,47 @@ namespace TB_QuestGame
 
             Console.CursorVisible = false;
 
+        }
+        private void HandleObjectAddedToInventory(object gameObject, EventArgs e)
+        {
+            if (gameObject.GetType() == typeof(ProspectorObject))
+            {
+                ProspectorObject travelerObject = gameObject as ProspectorObject;
+                switch (travelerObject.Type)
+                {
+                    case ProspectorObjectType.Food:
+                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorObjectType.Medicine:
+                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorObjectType.Weapon:
+                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorObjectType.Treasure:
+                        _gamePlayer.Money += travelerObject.Value;
+                        _gameConsoleView.DisplayConfirmTravelerObjectAddedToMoney(travelerObject);
+                        Random rnd = new Random();
+                        travelerObject.RegionLocationId = rnd.Next(1, _gameUniverse.RegionLocations.Count);
+                        break;
+                    case ProspectorObjectType.Information:
+                        _gameConsoleView.DisplayGamePlayScreen("An Important Message", travelerObject.PickUpMessage, ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorObjectType.Resource:
+                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorObjectType.String:
+                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
+                        break;
+                    case ProspectorObjectType.Tool:
+                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
+                        break;
+                    default:
+                        break;
+                       
+                }
+                
+            }
         }
 
         /// <summary>
@@ -120,14 +171,23 @@ namespace TB_QuestGame
                 //
                 // get next game action from player
                 //
-                if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.MainMenu)
-                {
-                    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
-                }
-                else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.AdminMenu)
-                {
-                    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.AdminMenu);
-                }
+                travelerActionChoice = GetNextProspectorAction();
+                //if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.MainMenu)
+                //{
+                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+                //}
+                //else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.AdminMenu)
+                //{
+                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.AdminMenu);
+                //}
+                //else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.ManageInventory)
+                //{
+                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.useItem);
+                //}
+                //else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.ProspectorInfo)
+                //{
+                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.ProspectorInfo);
+                //}
 
                 //
                 // choose an action based on the user's menu choice
@@ -138,7 +198,9 @@ namespace TB_QuestGame
                         break;
 
                     case ProspectorAction.ProspectorInfo:
-                        _gameConsoleView.DisplayTravelerInfo();
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.ProspectorInfo;
+                        _gameConsoleView.DisplayGamePlayScreen("Player Info", "Select an operation from the menu.", ActionMenu.ProspectorInfo, "");
+                        //_gameConsoleView.DisplayTravelerInfo();
                         break;
                     case ProspectorAction.EditAccount:
                         editAccount();
@@ -194,11 +256,37 @@ namespace TB_QuestGame
                         PutDownAction();
                         break;
                     case ProspectorAction.Shop:
+                        if (_gameUniverse.GetRegionLocationById(_gamePlayer.CurrentRegionLocationID).CommonName == "Wilderness")
+                        {
+                            _gameConsoleView.DisplayCanNotVisitShop();
+                        }
+                        else
+                        {
                         Shop();
+                        } 
+                        
                         break;
-
+                    case ProspectorAction.ManageInventory:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.ManageInventory;
+                        _gameConsoleView.DisplayGamePlayScreen("Manage Inventory", "Your items are listed below.", ActionMenu.useItem, "");
+                        break;
+                    case ProspectorAction.ListNonPlayableCharacters:
+                        _gameConsoleView.DisplayListOfAllNpcObjects();
+                        break;
+                    case ProspectorAction.TalkTo:
+                        TalkToAction();
+                        break;
+                    case ProspectorAction.SellTo:
+                        SellItem();
+                        break;
+                    case ProspectorAction.Interact:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.NpcMenu;
+                        _gameConsoleView.DisplayGamePlayScreen("Interact With NPC", "Please select an action!", ActionMenu.NpcMenu, "");
+                        break;
+                    
                     default:
                         break;
+
                 }
             }
 
@@ -313,29 +401,32 @@ namespace TB_QuestGame
                 // get the game object from the universe
                 //
                 ProspectorObject travelerObject = _gameUniverse.GetGameObjectById(travelerObjectToPickUpId) as ProspectorObject;
-
+                _gamePlayer.ExpPoints += travelerObject.ExperiencePoints;
                 //
                 // note: traveler object is added to list and the space-time location is set to 0
                 //
-                if (travelerObject.Type == ProspectorObjectType.Treasure)
-                {
-                    _gamePlayer.Money += travelerObject.Value;
-                    _gameConsoleView.DisplayConfirmTravelerObjectAddedToMoney(travelerObject);
-                    Random rnd = new Random();
-                    travelerObject.RegionLocationId = rnd.Next(1, _gameUniverse.RegionLocations.Count);
-                }
-                else
-                {
-                _gamePlayer.Inventory.Add(travelerObject);
+                //if (travelerObject.Type == ProspectorObjectType.Treasure)
+                //{
+                //_gamePlayer.Money += travelerObject.Value;
+                //_gameConsoleView.DisplayConfirmTravelerObjectAddedToMoney(travelerObject);
+                //Random rnd = new Random();
+                //  travelerObject.RegionLocationId = rnd.Next(1, _gameUniverse.RegionLocations.Count);
+                //}
+                //else if(travelerObject.Type == ProspectorObjectType.Medicine){
+                //    _gamePlayer.PlayerHealthStatus += 10;
+                //}
+                //else
+                //{
+                //_gamePlayer.Inventory.Add(travelerObject);
                 travelerObject.RegionLocationId = 0;
-                _gameConsoleView.DisplayConfirmTravelerObjectAddedToInventory(travelerObject);
-                }
+                //_gameConsoleView.DisplayConfirmTravelerObjectAddedToInventory(travelerObject);
+                // }
 
 
                 //
                 // display confirmation message
                 //
-
+                _gamePlayer.Inventory.Add(travelerObject);
             }
         }
 
@@ -369,19 +460,13 @@ namespace TB_QuestGame
             switch (userChoice)
             {
                 case 1:
-                    
-                    GameObject itemToBuy = _gameConsoleView.DisplayBuy();
-                    ProspectorObject travelerObject = itemToBuy as ProspectorObject;
-                    _gamePlayer.Inventory.Add(travelerObject);
-                    travelerObject.RegionLocationId = 0;
-                    _gamePlayer.Money -= travelerObject.Value;
-                    _gameConsoleView.DisplayConfirmationPurchase(travelerObject);
+                    buyItem();
                     break;
                 case 2:
                     GameObject item = _gameConsoleView.DisplaySell();
                     ProspectorObject itemtoSell = item as ProspectorObject;
                     _gamePlayer.Inventory.Remove(itemtoSell);
-                    _gamePlayer.Money += itemtoSell.Value;
+                    _gamePlayer.Money += (int)(itemtoSell.Value*(.5));
                     _gameConsoleView.DisplayConfirmationSell(itemtoSell);
                     break;
                 case 3:
@@ -393,6 +478,105 @@ namespace TB_QuestGame
             }
 
         }
-        #endregion
+        private void buyItem()
+        {
+            Random R = new Random();
+            
+            double currentPricePercent = R.Next(1, 50);
+            GameObject itemToBuy = _gameConsoleView.DisplayBuy(currentPricePercent);
+            ProspectorObject travelerObject = itemToBuy as ProspectorObject;
+
+            if (_gamePlayer.Money - travelerObject.Value > 0)
+            {
+                _gamePlayer.Inventory.Add(travelerObject);
+                travelerObject.RegionLocationId = 0;
+                _gamePlayer.Money -= travelerObject.Value;
+                _gameConsoleView.DisplayConfirmationPurchase(travelerObject);
+            }
+            else
+            {
+                _gameConsoleView.DisplayCanNotBuy();
+            }
+        }
+
+        private ProspectorAction GetNextProspectorAction()
+        {
+            ProspectorAction prospectorAction = ProspectorAction.None;
+
+            switch (ActionMenu.currentMenu)
+            {
+                case ActionMenu.CurrentMenu.MissionIntro:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.GameIntro);
+                    break;
+                case ActionMenu.CurrentMenu.InitializeMission:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.InitializeMission);
+                    break;
+                case ActionMenu.CurrentMenu.MainMenu:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+                    break;
+                case ActionMenu.CurrentMenu.AdminMenu:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.AdminMenu);
+                    break;
+                case ActionMenu.CurrentMenu.ManageInventory:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.useItem);
+                    break;
+                case ActionMenu.CurrentMenu.ProspectorInfo:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.ProspectorInfo);
+                    break;
+                case ActionMenu.CurrentMenu.NpcMenu:
+                    prospectorAction = _gameConsoleView.GetActionMenuChoice(ActionMenu.NpcMenu);
+                    break;
+                default:
+                    break;
+            }
+
+            return prospectorAction;
+
+        }
+       private void TalkToAction()
+        {
+            int npcToTalkToId = _gameConsoleView.DisplayGetNpcToTalkTo();
+
+            if (npcToTalkToId != 0)
+            {
+                Npc npc = _gameUniverse.GetNpcById(npcToTalkToId);
+
+
+
+                _gameConsoleView.DisplayTalkTo(npc);
+            }
+
+
+        }
+        private void SellItem()
+        {
+
+            
+
+            int npcToSellToId = _gameConsoleView.DisplayGetNpcToSellTo();
+            GameObject itemToSell = _gameConsoleView.DisplaySell();
+            ProspectorObject objecttosell = itemToSell as ProspectorObject;
+
+            _gameConsoleView.DisplayGamePlayScreen("The offer", $"{_gameUniverse.GetNpcById(npcToSellToId).Name} would like to offer you {objecttosell.Value}", ActionMenu.NpcMenu, "");
+            int userResponse;
+            _gameConsoleView.GetInteger("Enter 1 for YES and 2 for No", 1, 2, out userResponse);
+            if (userResponse == 1)
+            {
+                _gamePlayer.Money += objecttosell.Value;
+                _gamePlayer.Inventory.Remove(objecttosell);
+
+                _gameConsoleView.DisplayGamePlayScreen("Deal Processed!", $"{_gameUniverse.GetNpcById(npcToSellToId).Name} bought {objecttosell.Name} for {objecttosell.Value}", ActionMenu.NpcMenu, "");
+            }
+            else
+            {
+                _gameConsoleView.DisplayGamePlayScreen("Deal Cancelled!", $"The deal was cancelled", ActionMenu.NpcMenu, "");
+            }
+        }
+
+        
     }
+    
+
+
+#endregion
 }

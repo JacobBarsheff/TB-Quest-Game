@@ -28,7 +28,6 @@ namespace TB_QuestGame
         //
         Prospector _gameTraveler;
         Universe _gameUniverse;
-
         ViewStatus _viewStatus;
 
         #endregion
@@ -80,7 +79,7 @@ namespace TB_QuestGame
             string playerHealth = " ";
             DisplayHealthBox($"Player Status", playerHealth);
             DisplayMapBox();
-            DisplayInventoryBox();
+            DisplayInventoryBox(_gameTraveler);
         }
 
         /// <summary>
@@ -147,7 +146,7 @@ namespace TB_QuestGame
         /// get an integer value from the user
         /// </summary>
         /// <returns>integer value</returns>
-        private bool GetInteger(string prompt, int minimumValue, int maximumValue, out int integerChoice)
+        public bool GetInteger(string prompt, int minimumValue, int maximumValue, out int integerChoice)
         {
             bool validResponse = false;
             integerChoice = 0;
@@ -420,12 +419,17 @@ namespace TB_QuestGame
             Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, row);
             decimal convertedPlayerHealth = (((decimal)_gameTraveler.ProspectorHealth / (decimal)100) * (decimal)33);
             int playerHealthRemaining = 33 - (int)convertedPlayerHealth;
-
-            Console.BackgroundColor = ConsoleTheme.HealthBackgroundColor;            
+            
+            Console.BackgroundColor = ConsoleTheme.HealthBackgroundColor;     
+            if(convertedPlayerHealth > 33)
+            {
+                convertedPlayerHealth = 33;
+            }            
             for (int i = 0; i < (convertedPlayerHealth -1); i++)
             {
                 Console.Write(" ");
             }
+
             for (int i = 0; i < playerHealthRemaining; i++)
             {
                 Console.BackgroundColor = ConsoleColor.DarkRed;
@@ -449,7 +453,7 @@ namespace TB_QuestGame
 
 
             Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, 9);
-            Console.Write($"Money: ${ _gameTraveler.Money}");
+            Console.Write($"Money: ${_gameTraveler.Money}");
 
 
 
@@ -597,16 +601,27 @@ namespace TB_QuestGame
             Console.WriteLine("W ");
 
         }
-        public void DisplayInventoryBox()
+        public void DisplayInventoryBox(Prospector gamePlayer)
         {
             Console.BackgroundColor = ConsoleTheme.InputBoxBackgroundColor;
             Console.ForegroundColor = ConsoleTheme.InputBoxBorderColor;
-
             ConsoleWindowHelper.DisplayBoxOutline(
                 ConsoleLayout.InventoryBoxPositionTop,
                 ConsoleLayout.InventoryBoxPositionLeft,
                 ConsoleLayout.InventoryBoxWidth,
                 ConsoleLayout.InventoryBoxHeight);
+            int row = ConsoleLayout.InventoryBoxPositionTop + 3;
+            int index = 1;
+            Console.SetCursorPosition(ConsoleLayout.InventoryBoxPositionLeft + 10, ConsoleLayout.InventoryBoxPositionTop+1);
+            Console.WriteLine("Current Inventory");
+            foreach (ProspectorObject item in gamePlayer.Inventory)
+            {
+                Console.SetCursorPosition(ConsoleLayout.InventoryBoxPositionLeft + 2, row);
+                Console.WriteLine($"{index}.  " + item.Name);
+                row++;
+                index++;
+            }
+
         }
         /// <summary>
         /// display the prompt in the input box of the game screen
@@ -783,7 +798,7 @@ namespace TB_QuestGame
 
         public void DisplayUpdatedTravelerInfo(Prospector gameplayer)
         {
-            DisplayGamePlayScreen("Prospector Updated Information", Text.TravelerInfo(gameplayer), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Prospector Updated Information", Text.TravelerInfo(gameplayer), ActionMenu.ProspectorInfo, "");
         }
 
 
@@ -798,16 +813,25 @@ namespace TB_QuestGame
 
         public void DisplayLookAround()
         {
-            RegionLocation currentRegionLocation = _gameUniverse.GetRegionLocationById
-                (_gameTraveler.CurrentRegionLocationID);
-            DisplayGamePlayScreen("Current Location", Text.LookAround(currentRegionLocation), ActionMenu.MainMenu, "");
+            RegionLocation currentRegionLocation = _gameUniverse.GetRegionLocationById(_gameTraveler.CurrentRegionLocationID);
+            //DisplayGamePlayScreen("Current Location", Text.LookAround(currentRegionLocation), ActionMenu.MainMenu, "");
 
             // get list of objects in current region location
 
+
             List<GameObject> gameObjectsInCurrentRegionLocation = _gameUniverse.GetGameObjectsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
 
+            List<Npc> npcsInCurrentRegionLocation = _gameUniverse.GetNpcsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
+
             string messageBoxText = Text.LookAround(currentRegionLocation) + Environment.NewLine + Environment.NewLine;
-            messageBoxText += Text.GameObjectsChooseList(gameObjectsInCurrentRegionLocation);
+            messageBoxText += Text.GameObjectsChooseList(gameObjectsInCurrentRegionLocation) + Environment.NewLine;
+
+            //
+            //get list of npc
+            //
+
+
+            messageBoxText += Text.NpcsChooseList(npcsInCurrentRegionLocation);
 
             DisplayGamePlayScreen("Current Location", messageBoxText, ActionMenu.MainMenu, "");
 
@@ -1026,7 +1050,15 @@ namespace TB_QuestGame
         }
         public void DisplayConfirmTravelerObjectAddedToInventory(ProspectorObject objectAddedToInventory)
         {
+            if (objectAddedToInventory.PickUpMessage != null)
+            {
+                           DisplayGamePlayScreen("Pick Up Game Object",objectAddedToInventory.PickUpMessage, ActionMenu.MainMenu, "");
+            }
+            else
+            {
             DisplayGamePlayScreen("Pick Up Game Object", $"The {objectAddedToInventory.Name} has been added to your inventory.", ActionMenu.MainMenu, "");
+            }
+            
         }
         public void DisplayConfirmTravelerObjectAddedToMoney(ProspectorObject objectAddedToInventory)
         {
@@ -1045,22 +1077,40 @@ namespace TB_QuestGame
 
             return userChoice;
         }
-        public GameObject DisplayBuy()
+        public GameObject DisplayBuy(double itemPercent)
         {
+
             Random rnd = new Random();
-            int num = rnd.Next(1, 5);
+            int num = rnd.Next(2, 6);
             List<GameObject> shopItems = new List<GameObject>();
-            for (int i = 0; i < num; i++)
+            for (int i = 0; i < num;)
             {
                 Random rnd2 = new Random();
+
                 int num2 = rnd.Next(1, _gameUniverse.GameObjects.Count());
+
+                ProspectorObject travelerObject = _gameUniverse.GetGameObjectById(num2) as ProspectorObject;
+                List<string> shopItemString = new List<string>();
+                foreach (var shopitem in shopItems)
+                {
+                    shopItemString.Add(shopitem.Name);
+                }
+                if (travelerObject.Type == ProspectorObjectType.Treasure || shopItemString.Contains(_gameUniverse.GetGameObjectById(num2).Name.ToString()))
+                {
+
+                }
+                else
+                {
                 shopItems.Add(_gameUniverse.GetGameObjectById(num2));
+                    i++;
+                }      
+                
             }
-
-
-            DisplayGamePlayScreen("Weclome to the Store!", Text.DisplayShopItems(shopItems), ActionMenu.MainMenu, "");
-            int userChoice = 0;
-            GetInteger($"Enter the Item Number you would like to buy", 1, shopItems.Count, out userChoice);
+            
+            
+            DisplayGamePlayScreen("Weclome to the Store!", Text.DisplayShopItems(shopItems, itemPercent), ActionMenu.MainMenu, "");
+            int userChoice;
+            GetInteger($"Enter the Item Number you would like to buy", 0, shopItems.Count, out userChoice);
 
 
             return shopItems[userChoice - 1];
@@ -1074,19 +1124,140 @@ namespace TB_QuestGame
         }
         public void DisplayConfirmationSell(ProspectorObject itemsold)
         {
-            DisplayGamePlayScreen("Purchase Complete!", $"You sold {itemsold.Name} for ${itemsold.Value}.00. You have ${_gameTraveler.Money} left", ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Sell Complete!", $"You sold {itemsold.Name} for ${(int)(itemsold.Value*.5)}. You have ${_gameTraveler.Money} left", ActionMenu.MainMenu, "");
         }
         public void DisplayNoShop()
         {
             DisplayGamePlayScreen("Shop Canceled", $"Please select a menu option on the right!", ActionMenu.MainMenu, "");
         }
+
+        public void DisplayCanNotVisitShop ()
+        {
+            DisplayGamePlayScreen("Invalid Selection", $"Looks like your not in a city! You must be in a city to access that function!", ActionMenu.MainMenu, "");
+        }
+
         public GameObject DisplaySell()
         {
             DisplayGamePlayScreen("Current Inventory", Text.CurrentInventorySell(_gameTraveler.Inventory), ActionMenu.MainMenu, "");
             int userChoice = 0;
             GetInteger($"Enter the Item Number you would like to sell", 0, _gameTraveler.Inventory.Count, out userChoice);
-
             return _gameTraveler.Inventory[userChoice - 1];
+        }
+        public void DisplayCanNotBuy()
+        {
+            DisplayGamePlayScreen("Declined", $"Looks like you don't have enough money to purchase this item.", ActionMenu.MainMenu, "");
+        }
+        public void DisplayListOfAllNpcObjects()
+        {
+            DisplayGamePlayScreen("List: Npc Objects", Text.ListAllNpcObjects(_gameUniverse.Npcs), ActionMenu.AdminMenu, "");
+        }
+        public int DisplayGetNpcToTalkTo()
+        {
+            int npcId = 0;
+            bool validNpcId = false;
+
+            List<Npc> npcsInRegionLocation = _gameUniverse.GetNpcsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
+
+            if (npcsInRegionLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Choose A Character To Speak With", Text.NpcsChooseList(npcsInRegionLocation), ActionMenu.NpcMenu,"");
+
+                while (!validNpcId)
+                {
+                    //
+                    //get an integer from the player
+                    //
+                    GetInteger($"Enter the Number of the character you would like to speak with:", 0, 0, out npcId);
+
+                    if (_gameUniverse.IsValidNpcByLocation(npcId, _gameTraveler.CurrentRegionLocationID))
+                    {
+                        Npc npc = _gameUniverse.GetNpcById(npcId);
+
+                        if (npc is ISpeak)
+                        {
+                            validNpcId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("It appears this character has nothing to say");
+                        }
+
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid NPC id. Please try again");
+                    }
+
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Choose a character to Speak With", "It appears there are no NPCs here.", ActionMenu.NpcMenu, "");
+            }
+            return npcId;
+        }
+        public int DisplayGetNpcToSellTo()
+        {
+            int npcId = 0;
+            bool validNpcId = false;
+
+            List<Npc> npcsInRegionLocation = _gameUniverse.GetNpcsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
+
+            if (npcsInRegionLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Choose A Character To Sell To", Text.NpcsChooseList(npcsInRegionLocation), ActionMenu.NpcMenu, "");
+
+                while (!validNpcId)
+                {
+                    //
+                    //get an integer from the player
+                    //
+                    GetInteger($"Enter the Number of the character you would like to sell with:", 0, 0, out npcId);
+
+                    if (_gameUniverse.IsValidNpcByLocation(npcId, _gameTraveler.CurrentRegionLocationID))
+                    {
+                        Npc npc = _gameUniverse.GetNpcById(npcId);
+
+                        if (npc is ISpeak)
+                        {
+                            validNpcId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("It appears this character has nothing to say");
+                        }
+
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid NPC id. Please try again");
+                    }
+
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Choose a character to Speak With", "It appears there are no NPCs here.", ActionMenu.NpcMenu, "");
+            }
+            return npcId;
+        }
+        public void DisplayTalkTo(Npc npc)
+        {
+            ISpeak speakingNpc = npc as ISpeak;
+
+            string message = speakingNpc.Speak();
+
+            if (message == "")
+            {
+                message = "It appears the character has nothing to say."; 
+            }
+
+            DisplayGamePlayScreen("Speaking to Character", message, ActionMenu.NpcMenu, "");
+
         }
         #endregion
 
