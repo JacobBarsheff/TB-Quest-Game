@@ -78,6 +78,7 @@ namespace TB_QuestGame
             if (gameObject.GetType() == typeof(ProspectorObject))
             {
                 ProspectorObject travelerObject = gameObject as ProspectorObject;
+                _gamePlayer.Inventory.Add(travelerObject);
                 switch (travelerObject.Type)
                 {
                     case ProspectorObjectType.Food:
@@ -99,9 +100,6 @@ namespace TB_QuestGame
                         _gameConsoleView.DisplayGamePlayScreen("An Important Message", travelerObject.PickUpMessage, ActionMenu.MainMenu, "");
                         break;
                     case ProspectorObjectType.Resource:
-                        _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
-                        break;
-                    case ProspectorObjectType.String:
                         _gameConsoleView.DisplayGamePlayScreen("Item Added", $"You have added {travelerObject.Name} to your inventory!", ActionMenu.MainMenu, "");
                         break;
                     case ProspectorObjectType.Tool:
@@ -199,7 +197,7 @@ namespace TB_QuestGame
 
                     case ProspectorAction.ProspectorInfo:
                         ActionMenu.currentMenu = ActionMenu.CurrentMenu.ProspectorInfo;
-                        _gameConsoleView.DisplayGamePlayScreen("Player Info", "Select an operation from the menu.", ActionMenu.ProspectorInfo, "");
+                        _gameConsoleView.DisplayTravelerInfo();
                         //_gameConsoleView.DisplayTravelerInfo();
                         break;
                     case ProspectorAction.EditAccount:
@@ -268,7 +266,7 @@ namespace TB_QuestGame
                         break;
                     case ProspectorAction.ManageInventory:
                         ActionMenu.currentMenu = ActionMenu.CurrentMenu.ManageInventory;
-                        _gameConsoleView.DisplayGamePlayScreen("Manage Inventory", "Your items are listed below.", ActionMenu.useItem, "");
+                        _gameConsoleView.DisplayGamePlayScreen("Manage Inventory", $"Please select an menu action you would like to do with the below items: \n{Text.CurrentInventory(_gamePlayer.Inventory)}", ActionMenu.useItem, "");
                         break;
                     case ProspectorAction.ListNonPlayableCharacters:
                         _gameConsoleView.DisplayListOfAllNpcObjects();
@@ -283,7 +281,17 @@ namespace TB_QuestGame
                         ActionMenu.currentMenu = ActionMenu.CurrentMenu.NpcMenu;
                         _gameConsoleView.DisplayGamePlayScreen("Interact With NPC", "Please select an action!", ActionMenu.NpcMenu, "");
                         break;
-                    
+                    case ProspectorAction.ConsumeItem:
+                        ConsumeItem();
+                        break;
+
+                    case ProspectorAction.WieldItem:
+                        WieldItem();
+                        break;
+                    case ProspectorAction.PlayerInfoMenu:
+                        ActionMenu.currentMenu = ActionMenu.CurrentMenu.ProspectorInfo;
+                        _gameConsoleView.DisplayGamePlayScreen("Player Information", "Please select a menu option to your left to view Player Information", ActionMenu.ProspectorInfo, "");
+                        break;
                     default:
                         break;
 
@@ -299,6 +307,80 @@ namespace TB_QuestGame
         /// <summary>
         /// initialize the player info
         /// </summary>
+        /// 
+        private void WieldItem()
+        {
+            int playerChoice;
+            //show items
+
+            playerChoice = _gameConsoleView.DisplayItemStats("wield");
+            if (playerChoice == 0)
+            {
+                _gameConsoleView.DisplayGamePlayScreen("Cancelled", "You exited the inventory", ActionMenu.useItem, "Please Enter The Item Id: ");
+            }
+            else
+            {
+                if (_gamePlayer.Inventory[playerChoice - 3].Type == ProspectorObjectType.Weapon || _gamePlayer.Inventory[playerChoice - 3].Type == ProspectorObjectType.Tool)
+                {
+                    _gamePlayer.CurrentWieldedWeapon = _gamePlayer.Inventory[playerChoice - 3];
+                    _gameConsoleView.DisplayGamePlayScreen("Item Equipped!", $"{_gamePlayer.Inventory[playerChoice - 3].Name} was equipped!", ActionMenu.useItem, "");
+
+                }
+                else
+                {
+                    _gameConsoleView.DisplayGamePlayScreen("Item Not Equipped!", $"{_gamePlayer.Inventory[playerChoice - 3].Name} is a {_gamePlayer.Inventory[playerChoice - 3].Type} and can not be equipped!", ActionMenu.useItem, "");
+                }
+            }
+        }
+        private void ConsumeItem()
+        {
+            int playerChoice;
+            //show items
+            playerChoice = _gameConsoleView.DisplayItemStats("consume");
+            if (playerChoice == 0)
+            {
+                _gameConsoleView.DisplayGamePlayScreen("Cancelled", "You exited the inventory", ActionMenu.useItem, "Please Enter The Item Id: ");
+            }
+            else
+            {
+
+
+            //_gameConsoleView.DisplayGamePlayScreen("Consume Item", Text.CurrentInventoryNumbered(_gamePlayer.Inventory), ActionMenu.useItem, "Please Enter The Item Id: ");
+            //_gameConsoleView.GetInteger("Please enter the Item #: ", 1, _gamePlayer.Inventory.Count(), out playerChoice);
+            switch (_gamePlayer.Inventory[playerChoice - 3].Type)
+            {
+                case ProspectorObjectType.Food:
+                    _gameConsoleView.DisplayGamePlayScreen("Item Consumed", $"You consumed {_gamePlayer.Inventory[playerChoice - 3].Name} for {_gamePlayer.Inventory[playerChoice - 3].Value} health points!" , ActionMenu.useItem, "Please Enter The Item Id: ");
+                    _gamePlayer.ProspectorHealth += _gamePlayer.Inventory[playerChoice - 3].Value;
+                    _gamePlayer.Inventory.Remove(_gamePlayer.Inventory[playerChoice - 3]);
+                    
+                    break;
+                case ProspectorObjectType.Medicine:                    
+                    
+                    _gamePlayer.ProspectorHealth += _gamePlayer.Inventory[playerChoice - 3].Value;
+                    _gameConsoleView.DisplayGamePlayScreen("Item Consumed", $"You consumed {_gamePlayer.Inventory[playerChoice - 3].Name} for {_gamePlayer.Inventory[playerChoice - 3].Value} health points!", ActionMenu.useItem, "Please Enter The Item Id: ");
+                    _gamePlayer.Inventory.Remove(_gamePlayer.Inventory[playerChoice - 3]);
+                    break;
+                case ProspectorObjectType.Weapon:
+                    _gameConsoleView.DisplayGamePlayScreen("Invalid Item", $"You can't consume a {_gamePlayer.Inventory[playerChoice - 3].Name} because it is a {_gamePlayer.Inventory[playerChoice - 3].Type}!", ActionMenu.useItem, "Please Enter The Item Id: ");
+                    break;
+                case ProspectorObjectType.Treasure:
+                    _gameConsoleView.DisplayGamePlayScreen("Invalid Item", $"You can't consume a {_gamePlayer.Inventory[playerChoice - 3].Name} because it is a {_gamePlayer.Inventory[playerChoice - 3].Type}!", ActionMenu.useItem, "Please Enter The Item Id: ");
+                    break;
+                case ProspectorObjectType.Information:
+                    _gameConsoleView.DisplayGamePlayScreen("Invalid Item", $"You can't consume a {_gamePlayer.Inventory[playerChoice - 3].Name} because it is a {_gamePlayer.Inventory[playerChoice - 3].Type}!", ActionMenu.useItem, "Please Enter The Item Id: ");
+                    break;
+                case ProspectorObjectType.Resource:
+                    _gameConsoleView.DisplayGamePlayScreen("Invalid Item", $"You can't consume a {_gamePlayer.Inventory[playerChoice - 3].Name} because it is a {_gamePlayer.Inventory[playerChoice - 3].Type}!", ActionMenu.useItem, "Please Enter The Item Id: ");
+                    break;
+                case ProspectorObjectType.Tool:
+                    _gameConsoleView.DisplayGamePlayScreen("Invalid Item", $"You can't consume a {_gamePlayer.Inventory[playerChoice - 3].Name} because it is a {_gamePlayer.Inventory[playerChoice - 3].Type}!", ActionMenu.useItem, "Please Enter The Item Id: ");
+                    break;
+                default:
+                    break;
+            }
+            }
+        }
         private void InitializeAdventure()
         {
             Prospector prospector = _gameConsoleView.GetInitialTravelerInfo();
@@ -426,7 +508,7 @@ namespace TB_QuestGame
                 //
                 // display confirmation message
                 //
-                _gamePlayer.Inventory.Add(travelerObject);
+                //_gamePlayer.Inventory.Add(travelerObject);
             }
         }
 
@@ -488,7 +570,7 @@ namespace TB_QuestGame
 
             if (_gamePlayer.Money - travelerObject.Value > 0)
             {
-                _gamePlayer.Inventory.Add(travelerObject);
+                //_gamePlayer.Inventory.Add(travelerObject);
                 travelerObject.RegionLocationId = 0;
                 _gamePlayer.Money -= travelerObject.Value;
                 _gameConsoleView.DisplayConfirmationPurchase(travelerObject);
@@ -554,7 +636,7 @@ namespace TB_QuestGame
             
 
             int npcToSellToId = _gameConsoleView.DisplayGetNpcToSellTo();
-            GameObject itemToSell = _gameConsoleView.DisplaySell();
+            GameObject itemToSell = _gameConsoleView.DisplaySellToNPC();
             ProspectorObject objecttosell = itemToSell as ProspectorObject;
 
             _gameConsoleView.DisplayGamePlayScreen("The offer", $"{_gameUniverse.GetNpcById(npcToSellToId).Name} would like to offer you {objecttosell.Value}", ActionMenu.NpcMenu, "");

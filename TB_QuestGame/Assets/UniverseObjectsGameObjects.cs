@@ -101,7 +101,7 @@ namespace TB_QuestGame
                 Name = "String",
                 RegionLocationId = 6,
                 Description = "A spool of some string, may be useful!",
-                Type = ProspectorObjectType.Tool,
+                Type = ProspectorObjectType.Resource,
                 Value = 2,
                 CanInventory = true,
                 IsConsumable = false,
@@ -115,7 +115,7 @@ namespace TB_QuestGame
                 Name = "String",
                 RegionLocationId = 7,
                 Description = "A spool of some string, may be useful!",
-                Type = ProspectorObjectType.Tool,
+                Type = ProspectorObjectType.Resource,
                 Value = 2,
                 CanInventory = true,
                 IsConsumable = false,
@@ -336,10 +336,119 @@ namespace TB_QuestGame
                 ExperiencePoints = 25,
                 IsVisible = true,
                 PickUpMessage = "The key to riches lies in klondike. HEAD NORTH NOW."
+            },
 
-            }
+              new ProspectorObject
+            {
+                Id = 25,
+                Name = "Pain Killers",
+                RegionLocationId = 7,
+                Description = "Looks to be some white pain killers inside of a bottle",
+                Type = ProspectorObjectType.Medicine,
+                Value = 10,
+                CanInventory = true,
+                IsConsumable = true,
+                ExperiencePoints = 25,
+                IsVisible = true,
+            },
+             new ProspectorObject
+            {
+                Id = 26,
+                Name = "Pain Killers",
+                RegionLocationId = 9,
+                Description = "Looks to be some white pain killers inside of a bottle. Expiration date is scratched off...",
+                Type = ProspectorObjectType.Medicine,
+                Value = -10,
+                CanInventory = true,
+                IsConsumable = true,
+                ExperiencePoints = 25,
+                IsVisible = true,
+            },
+                          new ProspectorObject
+            {
+                Id = 27,
+                Name = "Pain Killers",
+                RegionLocationId = 5,
+                Description = "Looks to be some white pain killers inside of a bottle.",
+                Type = ProspectorObjectType.Medicine,
+                Value = 10,
+                CanInventory = true,
+                IsConsumable = true,
+                ExperiencePoints = 25,
+                IsVisible = true,
+            },
+            new ProspectorObject
+            {
+                Id = 28,
+                Name = "Gold Coins",
+                RegionLocationId = 3,
+                Description = "Looks to be 5 gold coins! Worth 50!",
+                Type = ProspectorObjectType.Treasure,
+                Value = 50,
+                CanInventory = true,
+                IsConsumable = false,
+                ExperiencePoints = 25,
+                IsVisible = true,
+                PickUpMessage = "You have added 50 gold coins to your wallet!!!"
 
+            },
+             new ProspectorObject
+            {
+                Id = 29,
+                Name = "Gold Coins",
+                RegionLocationId = 5,
+                Description = "Looks to be 10 gold coins! Worth 100!",
+                Type = ProspectorObjectType.Treasure,
+                Value = 100,
+                CanInventory = true,
+                IsConsumable = false,
+                ExperiencePoints = 25,
+                IsVisible = true,
+                PickUpMessage = "You have added 100 gold coins to your wallet!!!"
 
+            },
+            new ProspectorObject
+            {
+                Id = 30,
+                Name = "Bread",
+                RegionLocationId = 3,
+                Description = "A loaf of bread.",
+                Type = ProspectorObjectType.Food,
+                Value = 15,
+                CanInventory = true,
+                IsConsumable = true,
+                IsVisible = true,
+                ExperiencePoints = 15
+
+            },
+            new ProspectorObject
+            {
+                Id = 31,
+                Name = "Bread",
+                RegionLocationId = 6,
+                Description = "A loaf of bread.",
+                Type = ProspectorObjectType.Food,
+                Value = 15,
+                CanInventory = true,
+                IsConsumable = true,
+                IsVisible = true,
+                ExperiencePoints = 15
+
+            },
+           new ProspectorObject
+            {
+                Id = 32,
+                Name = "Bread",
+                RegionLocationId = 8,
+                Description = "A loaf of bread.",
+                Type = ProspectorObjectType.Food,
+                Value = 15,
+                CanInventory = true,
+                IsConsumable = true,
+                IsVisible = true,
+                ExperiencePoints = 15
+
+            },
 
 
 

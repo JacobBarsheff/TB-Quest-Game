@@ -35,6 +35,7 @@ namespace TB_QuestGame
         SellTo,
         Shop,
         AdminMenu,
+        PlayerInfoMenu,
         Interact,
         ReturnToMainMenu,
         ManageInventory,

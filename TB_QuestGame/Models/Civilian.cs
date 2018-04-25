@@ -11,7 +11,7 @@ namespace TB_QuestGame
         public override int Id { get; set; }
         public override string Description { get; set; }
         public List<string> Messages { get; set; }
-
+        public int healing { get; set; }
         public string Speak()
         {
             if(this.Messages != null)

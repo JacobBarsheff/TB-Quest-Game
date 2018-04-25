@@ -10,11 +10,27 @@ namespace TB_QuestGame
     {
         public static List<Npc> Npcs = new List<Npc>()
         {
+
+            new Civilian
+            {
+                Id = 2,
+                Name = "Doc Lou",
+                CurrentRegionLocationID = 1,
+                healing = 10,
+                Description = "A tall, slender man wearing a white lab coat.",
+                Messages = new List<string>
+                {
+                    "How are you doing?",
+                    "Im glad you talked to me!",
+                    "How are you feeling today?"
+                }
+            },
+
             new Civilian
             {
                 Id = 1,
                 Name = "Joe Johnson",
-                CurrentRegionLocationID = 1,
+                CurrentRegionLocationID = 2,
                 Description = "A well dressed, short man with a Canadian Accent.",
                 Messages = new List<string>
                 {
@@ -27,7 +43,7 @@ namespace TB_QuestGame
             {
                 Id = 2,
                 Name = "Brian Gold",
-                CurrentRegionLocationID = 1,
+                CurrentRegionLocationID = 3,
                 Description = "A rough looking man with a black coat and gray pants.",
                 Messages = new List<string>
                 {
@@ -36,6 +52,7 @@ namespace TB_QuestGame
                     "You look tired, want a place to stay for the night?"
                 }
             },
+
 
 
 

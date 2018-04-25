@@ -32,6 +32,10 @@ namespace TB_QuestGame
         private List<ProspectorObject> _inventory;
         private int _money = 70;
         private ProspectorObject _currentWieldedItem;
+        private int _attackLevel = 50;
+
+
+
 
 
 
@@ -39,6 +43,12 @@ namespace TB_QuestGame
         #endregion
 
         #region PROPERTIES
+        public int AttackLevel
+        {
+            get { return _attackLevel; }
+            set { _attackLevel = value; }
+        }
+
         public ProspectorObject CurrentWieldedWeapon
         {
             get { return _currentWieldedItem; }

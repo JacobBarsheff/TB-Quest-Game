@@ -478,6 +478,86 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        public static string CurrentInventoryNumbered(IEnumerable<ProspectorObject> inventory)
+        {
+            string messageBoxText = "";
+
+            //
+            // display table header
+            //
+            messageBoxText =
+            "#".PadRight(10) +
+            "Name".PadRight(30) +
+            "Type".PadRight(10) +
+            "\n" +
+            "---".PadRight(10) +
+            "----------------------------".PadRight(30) +
+            "----------------------".PadRight(10) +
+            "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string inventoryObjectRows = null;
+            int counter = 1;
+            foreach (ProspectorObject inventoryObject in inventory)
+            {
+                inventoryObjectRows +=
+                    $"{counter}".PadRight(10) +
+                    $"{inventoryObject.Name}".PadRight(30) +
+                    $"{inventoryObject.Type}".PadRight(10) +
+                    Environment.NewLine;
+                counter++;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            return messageBoxText;
+        }
+
+        public static string CurrentInventoryHighlighted(IEnumerable<ProspectorObject> inventory, int currentSelection)
+        {
+            string messageBoxText = "";
+
+            //
+            // display table header
+            //
+            messageBoxText =
+            "#".PadRight(10) +
+            "Name".PadRight(30) +
+            "Type".PadRight(10) +
+            "\n" +
+            "---".PadRight(10) +
+            "----------------------------".PadRight(30) +
+            "----------------------".PadRight(10) +
+            "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string inventoryObjectRows = null;
+            int counter = 1;
+            foreach (ProspectorObject inventoryObject in inventory)
+            {   
+                
+                inventoryObjectRows +=
+                    $"{counter}".PadRight(10) +
+                    $"{inventoryObject.Name}".PadRight(30) +
+                    $"{inventoryObject.Type}".PadRight(10) +
+                    Environment.NewLine;
+                counter++;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            
+
+            return messageBoxText;
+        }
+
+
+
+
         public static string CurrentInventorySell(IEnumerable<ProspectorObject> inventory)
         {
             string messageBoxText = "";
@@ -516,7 +596,44 @@ namespace TB_QuestGame
 
             return messageBoxText;
         }
+        public static string CurrentInventorySellToNPC(IEnumerable<ProspectorObject> inventory)
+        {
+            string messageBoxText = "";
 
+            //
+            // display table header
+            //
+            messageBoxText =
+            "#".PadRight(5) +
+            "Name".PadRight(20) +
+            "Offer".PadRight(10) +
+            "\n" +
+            "---".PadRight(5) +
+            "--------------".PadRight(20) +
+            "------".PadRight(10) +
+            "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string inventoryObjectRows = null;
+            int index = 1;
+            foreach (ProspectorObject inventoryObject in inventory)
+            {
+                inventoryObjectRows +=
+                    $"{index}".PadRight(5) +
+                    $"{inventoryObject.Name}".PadRight(20) +
+                    $"{(int)(inventoryObject.Value)}".PadRight(10) +
+                    Environment.NewLine;
+
+
+                index += 1;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            return messageBoxText;
+        }
         public static string DisplayShopItems(List<GameObject> shopItems, double itemPercent)
         {
             string messageBoxText = "";

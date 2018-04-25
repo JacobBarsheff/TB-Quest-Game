@@ -82,6 +82,27 @@ namespace TB_QuestGame
             DisplayInventoryBox(_gameTraveler);
         }
 
+        public void DisplayGamePlayScreenHighlighted(string messageBoxHeaderText, string messageBoxText, Menu menu, string inputBoxPrompt, int currentSelection)
+        {
+            //
+            // reset screen to default window colors
+            //
+            Console.BackgroundColor = ConsoleTheme.WindowBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.WindowForegroundColor;
+            Console.Clear();
+
+            ConsoleWindowHelper.DisplayHeader(Text.HeaderText);
+            ConsoleWindowHelper.DisplayFooter(Text.FooterText);
+
+            DisplayMessageBoxHighlighted(messageBoxHeaderText, messageBoxText, currentSelection);
+            DisplayMenuBox(menu);
+            DisplayInputBox();
+            string playerHealth = " ";
+            DisplayHealthBox($"Player Status", playerHealth);
+            DisplayMapBox();
+            DisplayInventoryBox(_gameTraveler);
+        }
+
         /// <summary>
         /// wait for any keystroke to continue
         /// </summary>
@@ -362,6 +383,64 @@ namespace TB_QuestGame
                 Console.SetCursorPosition(ConsoleLayout.MessageBoxPositionLeft + 2, row);
                 Console.Write(messageTextLine);
                 row++;
+            }
+
+        }
+        private void DisplayMessageBoxHighlighted(string headerText, string messageText, int currentSelection)
+        {
+            //
+            // display the outline for the message box
+            //
+            Console.BackgroundColor = ConsoleTheme.MessageBoxBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.MessageBoxBorderColor;
+            ConsoleWindowHelper.DisplayBoxOutline(
+                ConsoleLayout.MessageBoxPositionTop,
+                ConsoleLayout.MessageBoxPositionLeft,
+                ConsoleLayout.MessageBoxWidth,
+                ConsoleLayout.MessageBoxHeight);
+
+            //
+            // display message box header
+            //
+            Console.BackgroundColor = ConsoleTheme.MessageBoxBorderColor;
+            Console.ForegroundColor = ConsoleTheme.MessageBoxForegroundColor;
+            Console.SetCursorPosition(ConsoleLayout.MessageBoxPositionLeft + 2, ConsoleLayout.MessageBoxPositionTop + 1);
+            Console.Write(ConsoleWindowHelper.Center(headerText, ConsoleLayout.MessageBoxWidth - 4));
+
+            //
+            // display the text for the message box
+            //
+
+            Console.BackgroundColor = ConsoleTheme.MessageBoxBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.MessageBoxForegroundColor;
+            List<string> messageTextLines = new List<string>();
+            int startingRow1 = ConsoleLayout.MessageBoxPositionTop + 3;
+            int endingRow2 = startingRow1 + messageTextLines.Count();
+            int row3 = startingRow1;
+            messageTextLines = ConsoleWindowHelper.MessageBoxWordWrap(messageText, ConsoleLayout.MessageBoxWidth - 4);
+            for (int i = 0; i < ConsoleLayout.MessageBoxHeight; i++)
+            {
+                Console.SetCursorPosition(ConsoleLayout.MessageBoxPositionLeft + 2, row3);
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.WriteLine("                                                                            ");
+                row3 += 1;
+                i++;
+            }
+            int startingRow = ConsoleLayout.MessageBoxPositionTop + 3;
+            int endingRow = startingRow + messageTextLines.Count();
+            int row = startingRow;
+            int counter = 1;
+            foreach (string messageTextLine in messageTextLines)
+            {
+                if (currentSelection ==  counter)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                }
+                Console.SetCursorPosition(ConsoleLayout.MessageBoxPositionLeft + 2, row);
+                Console.Write(messageTextLine);
+                Console.BackgroundColor = ConsoleTheme.MessageBoxBackgroundColor;
+                row++;
+                counter++;
             }
 
         }
@@ -740,14 +819,14 @@ namespace TB_QuestGame
 
         public void DisplayTravelerInfo()
         {
-            DisplayGamePlayScreen("Prospector Information", Text.TravelerInfo(_gameTraveler), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Prospector Information", Text.TravelerInfo(_gameTraveler), ActionMenu.ProspectorInfo, "");
         }
 
         public int DisplayPlayerEdit(Prospector gamePlayer)
         {
 
 
-            DisplayGamePlayScreen("Adventure Prep - Account Edit", Text.DisplayAccountInfo(_gameTraveler), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Adventure Prep - Account Edit", Text.DisplayAccountInfo(_gameTraveler), ActionMenu.ProspectorInfo, "");
 
             int playerChoice;
             GetInteger("Enter a Number, PRESS (0) TO EXIT:", 0, 7, out playerChoice);
@@ -894,12 +973,92 @@ namespace TB_QuestGame
                 visitedRegionLocations.Add(_gameUniverse.GetRegionLocationById(regionLocationId));
             }
 
-            DisplayGamePlayScreen("Regions Visited", Text.VisitedLocations(visitedRegionLocations), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Regions Visited", Text.VisitedLocations(visitedRegionLocations), ActionMenu.ProspectorInfo, "");
 
         }
         public void DisplayListOfAllGameObjects()
         {
-            DisplayGamePlayScreen("List: Game Objects", Text.ListAllGameObjects(_gameUniverse.GameObjects), ActionMenu.AdminMenu, "");
+            // _gameUniverse.GameObjects.OrderBy(x => x.RegionLocationId);
+            Console.CursorVisible = false;
+            int userMenuNumber = 1;
+            bool done = false;
+            do {
+            List<GameObject> sortedList = new List<GameObject>();
+            if (userMenuNumber == 1)
+            {
+
+                int start = 1;
+                for (int i = 0; sortedList.Count < 17; i++)
+                {
+    
+                    foreach (var item in _gameUniverse.GameObjects)
+                    {
+                        if (item.RegionLocationId == start)
+                        {
+                        sortedList.Add(item);
+
+                        }
+                        
+                    }
+                          start++;  
+                    
+                }
+            }
+            else
+            {
+                int start = 6;
+                for (int i = 0; i < 20; i++)
+                {
+
+                    foreach (var item in _gameUniverse.GameObjects)
+                    {
+                        if (item.RegionLocationId == start)
+                        {
+                            sortedList.Add(item);
+
+                        }
+
+                    }
+                    start++;
+
+                }
+            }
+
+
+                DisplayGamePlayScreen("List: Game Objects", $"{Text.ListAllGameObjects(sortedList)}\n \nPlease use the left and right arrow keys to navigate list, or Escape to select a menu option.\nPage {userMenuNumber}/2", ActionMenu.AdminMenu, "");
+                ConsoleKeyInfo keyinfo = Console.ReadKey();
+                if (keyinfo.Key == ConsoleKey.LeftArrow)
+                {
+                    if (userMenuNumber == 1)
+                    {
+                        userMenuNumber = 2;
+                    }
+                    else
+                    {
+                        userMenuNumber = 1;
+                    }
+                }
+                else if (keyinfo.Key == ConsoleKey.RightArrow)
+                {
+                    if (userMenuNumber == 1)
+                    {
+                        userMenuNumber = 2;
+                    }
+                    else
+                    {
+                        userMenuNumber = 1;
+                    }
+                }
+                else if (keyinfo.Key == ConsoleKey.Escape)
+                {
+                    done = true;
+                }
+   
+
+        } while (!done);
+           
+
+
         }
         public int DisplayGetGameObjectToLookAt()
         {
@@ -913,7 +1072,7 @@ namespace TB_QuestGame
             List<GameObject> gameObjectsinRegionLocation = _gameUniverse.GetGameObjectsByRegionLocationId(_gameTraveler.CurrentRegionLocationID);
             if (gameObjectsinRegionLocation.Count > 0)
             {
-                DisplayGamePlayScreen("Look at a Object", Text.GameObjectsChooseList(gameObjectsinRegionLocation), ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Look at a Object", Text.GameObjectsChooseList(gameObjectsinRegionLocation), ActionMenu.NpcMenu, "");
 
                 while (!validGameObjectId)
                 {
@@ -938,7 +1097,7 @@ namespace TB_QuestGame
             }
             else
             {
-                DisplayGamePlayScreen("Look at a Object", "It appears there are no game objects here.", ActionMenu.MainMenu, "");
+                DisplayGamePlayScreen("Look at a Object", "It appears there are no game objects here.", ActionMenu.NpcMenu, "");
             }
 
             return gameObjectId;
@@ -948,7 +1107,7 @@ namespace TB_QuestGame
         }
         public void DisplayGameObjectInfo(GameObject gameObject)
         {
-            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.NpcMenu, "");
         }
         public void DisplayInventory()
         {
@@ -1067,7 +1226,7 @@ namespace TB_QuestGame
 
         public void DisplayConfirmTravelerObjectRemovedFromInventory(ProspectorObject objectRemovedFromInventory)
         {
-            DisplayGamePlayScreen("Put Down Game Object", $"The {objectRemovedFromInventory.Name} has been removed from your inventory.", ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Put Down Game Object", $"The {objectRemovedFromInventory.Name} has been removed from your inventory.", ActionMenu.useItem, "");
         }
         public int DisplayShopOptions()
         {
@@ -1095,9 +1254,9 @@ namespace TB_QuestGame
                 {
                     shopItemString.Add(shopitem.Name);
                 }
-                if (travelerObject.Type == ProspectorObjectType.Treasure || shopItemString.Contains(_gameUniverse.GetGameObjectById(num2).Name.ToString()))
+                if (travelerObject.Type == ProspectorObjectType.Treasure || shopItemString.Contains(_gameUniverse.GetGameObjectById(num2).Name.ToString()) || travelerObject.Value < 0)
                 {
-
+                    break;
                 }
                 else
                 {
@@ -1139,6 +1298,13 @@ namespace TB_QuestGame
         public GameObject DisplaySell()
         {
             DisplayGamePlayScreen("Current Inventory", Text.CurrentInventorySell(_gameTraveler.Inventory), ActionMenu.MainMenu, "");
+            int userChoice = 0;
+            GetInteger($"Enter the Item Number you would like to sell", 0, _gameTraveler.Inventory.Count, out userChoice);
+            return _gameTraveler.Inventory[userChoice - 1];
+        }
+        public GameObject DisplaySellToNPC()
+        {
+            DisplayGamePlayScreen("Current Inventory", Text.CurrentInventorySellToNPC(_gameTraveler.Inventory), ActionMenu.MainMenu, "");
             int userChoice = 0;
             GetInteger($"Enter the Item Number you would like to sell", 0, _gameTraveler.Inventory.Count, out userChoice);
             return _gameTraveler.Inventory[userChoice - 1];
@@ -1257,6 +1423,105 @@ namespace TB_QuestGame
             }
 
             DisplayGamePlayScreen("Speaking to Character", message, ActionMenu.NpcMenu, "");
+
+        }
+        public int DisplayItemStats(string actionType)
+        {
+
+            Console.CursorVisible = false;
+            bool ItemSelected = false;
+            int currentSelection = 3;
+
+            string currentItemInfo = $"Select {_gameTraveler.Inventory[currentSelection - 3].Name}?";
+            DisplayInputBoxPrompt("Press Enter To Select Item, Or ESCAPE to leave");
+            do
+            {
+
+                if (actionType == "consume")
+                {
+                    if (_gameTraveler.Inventory[currentSelection - 3].Type == ProspectorObjectType.Food || _gameTraveler.Inventory[currentSelection -3].Type == ProspectorObjectType.Medicine)
+                    {
+                        if (_gameTraveler.Inventory[currentSelection - 3].Value < 0)
+                        {
+                            currentItemInfo = $"Description:'{_gameTraveler.Inventory[currentSelection - 3].Description}'\n {_gameTraveler.Inventory[currentSelection - 3].Name} will heal ????." +
+                           $"\n Your health may rise or lower...A risk you can afford?";
+                        }
+                        else
+                        {
+                        currentItemInfo = $"Description:'{_gameTraveler.Inventory[currentSelection - 3].Description}'\n {_gameTraveler.Inventory[currentSelection - 3].Name} will heal {_gameTraveler.Inventory[currentSelection - 3].Value}." +
+                            $"\n Your health would rise to {_gameTraveler.ProspectorHealth + _gameTraveler.Inventory[currentSelection - 3].Value}";
+                        }
+                     
+                    }
+                    else
+                    {
+                       currentItemInfo = $"Description:'{_gameTraveler.Inventory[currentSelection - 3].Description}'\n {_gameTraveler.Inventory[currentSelection - 3].Name} is a {_gameTraveler.Inventory[currentSelection - 3].Type} and can not be consumed!";
+                    }
+                }
+                else if (actionType == "wield")
+                {
+                    if (_gameTraveler.Inventory[currentSelection - 3].Type == ProspectorObjectType.Weapon)
+                    {
+
+                        currentItemInfo = $"Description:'{_gameTraveler.Inventory[currentSelection - 3].Description}'\n {_gameTraveler.Inventory[currentSelection - 3].Name} will add {_gameTraveler.Inventory[currentSelection - 3].Value} attack points." +
+                              $"\n Your attack level would rise to { _gameTraveler.Inventory[currentSelection - 3].Value + _gameTraveler.AttackLevel}";
+                    }
+                    else if (_gameTraveler.Inventory[currentSelection - 3].Type == ProspectorObjectType.Tool)
+                    {
+                        currentItemInfo = $"Description:'{_gameTraveler.Inventory[currentSelection - 3].Description}'\n {_gameTraveler.Inventory[currentSelection - 3].Name} is a tool and should be used to as one. However, it can be used as a weapon and will add {_gameTraveler.Inventory[currentSelection - 3].Value} attack points." +
+                             $"\n Your attack level would rise to { _gameTraveler.Inventory[currentSelection - 3].Value + _gameTraveler.AttackLevel}";
+                    }
+                    else
+                    {
+                        currentItemInfo = $"Description:{_gameTraveler.Inventory[currentSelection - 3].Name} is a {_gameTraveler.Inventory[currentSelection - 3].Type} and can not be wielded!";
+                    }
+                }
+
+                DisplayMessageBoxHighlighted("Item Selection", $"{Text.CurrentInventoryHighlighted(_gameTraveler.Inventory, currentSelection)}" + $"\n \n \n {currentItemInfo}", currentSelection);
+                Console.CursorVisible = false;
+                ConsoleKeyInfo keyinfo = Console.ReadKey();
+
+                if (keyinfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (currentSelection >= _gameTraveler.Inventory.Count() + 2)
+                    {
+                    currentSelection = 3;
+                    }
+                    else
+                    {
+                        currentSelection += 1;
+                    }
+                    
+                    
+                }
+                else if(keyinfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (currentSelection == 3)
+                    {
+                        currentSelection = _gameTraveler.Inventory.Count() + 2;
+                    }
+                    else
+                    {
+                        currentSelection -= 1;
+                    }
+                }
+                else if(keyinfo.Key == ConsoleKey.Enter)
+                {
+                    ItemSelected = true;
+                }
+                else if(keyinfo.Key == ConsoleKey.Escape)
+                {
+                    currentSelection = 0;
+                    ItemSelected = true;
+                }
+
+            } while (!ItemSelected);
+
+
+
+
+            return currentSelection;
+
 
         }
         #endregion

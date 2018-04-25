@@ -49,22 +49,14 @@ namespace TB_QuestGame
             MenuTitle = "Main Menu",
             MenuChoices = new Dictionary<char, ProspectorAction>()
                 {
-                    { '1', ProspectorAction.ProspectorInfo},
-                    //{ '1', ProspectorAction.EditAccount},
+                    {'1', ProspectorAction.PlayerInfoMenu},
                     {'2', ProspectorAction.LookAround},
-                    //{'3', ProspectorAction.LookAt},
                     {'3', ProspectorAction.Travel},
-                //{'5', ProspectorAction.ProspectorLocationsVisited},
                     {'4', ProspectorAction.PickUpItem},
                     {'5', ProspectorAction.ManageInventory},
-
-                    
-                    //{'8', ProspectorAction.PutDownItem},
-                    //{'9', ProspectorAction.ProspectorInventory},
-
                     {'6', ProspectorAction.Shop},
-                    {'7', ProspectorAction.AdminMenu},
-                    {'8', ProspectorAction.Interact},
+                    {'7', ProspectorAction.Interact},
+                    {'8', ProspectorAction.AdminMenu},
                     {'0', ProspectorAction.Exit}
                 }
         };
@@ -124,6 +116,7 @@ namespace TB_QuestGame
                 {
                     { '1', ProspectorAction.TalkTo },
                     { '2', ProspectorAction.SellTo },
+                    { '3', ProspectorAction.LookAt },
                     { '0', ProspectorAction.ReturnToMainMenu }
                 }
         };
