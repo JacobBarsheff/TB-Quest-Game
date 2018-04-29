@@ -534,20 +534,6 @@ namespace TB_QuestGame
             Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, 9);
             Console.Write($"Money: ${_gameTraveler.Money}");
 
-
-
-            //List<string> messageTextLines = new List<string>();
-            //messageTextLines = ConsoleWindowHelper.MessageBoxWordWrap(messageText, ConsoleLayout.MessageBoxWidth - 4);
-
-            //int startingRow = ConsoleLayout.HealthBoxPositionTop + 3;
-            //int endingRow = startingRow + messageTextLines.Count();
-            //int row = startingRow;
-            //foreach (string messageTextLine in messageTextLines)
-            //{
-            //    Console.SetCursorPosition(ConsoleLayout.HealthBoxPositionLeft + 2, row);
-            //    Console.Write(messageTextLine);
-            //    row++;
-            //}
         }
 
         public void DisplayMapBox()
@@ -729,10 +715,10 @@ namespace TB_QuestGame
             //
             // get prospector's age
             //
-            //DisplayGamePlayScreen("Adventure Prep - Age", Text.InitializeAdventureGetTravelerAge(prospector), ActionMenu.GameIntro, "");
-            //int prospectorAge;
-            //GetInteger($"Enter your age {prospector.Name}: ", 0, 100, out prospectorAge);
-            //prospector.Age = prospectorAge;
+            DisplayGamePlayScreen("Adventure Prep - Age", Text.InitializeAdventureGetTravelerAge(prospector), ActionMenu.GameIntro, "");
+            int prospectorAge;
+            GetInteger($"Enter your age {prospector.Name}: ", 0, 100, out prospectorAge);
+            prospector.Age = prospectorAge;
 
             //
             // get prospector's title
