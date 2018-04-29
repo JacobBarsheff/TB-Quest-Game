@@ -89,7 +89,7 @@ namespace TB_QuestGame
             },
                      new Civilian
             {
-                Id = 3,
+                Id = 6,
                 Name = "Roy",
                 CurrentRegionLocationID = 8,
                 Description = "A rich looking man wearing a dark black suit.",
