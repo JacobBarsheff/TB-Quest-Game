@@ -841,7 +841,6 @@ namespace TB_QuestGame
         public void DisplayLookAround()
         {
             RegionLocation currentRegionLocation = _gameUniverse.GetRegionLocationById(_gameTraveler.CurrentRegionLocationID);
-            //DisplayGamePlayScreen("Current Location", Text.LookAround(currentRegionLocation), ActionMenu.MainMenu, "");
 
             // get list of objects in current region location
 
@@ -886,15 +885,6 @@ namespace TB_QuestGame
                     if (_gameUniverse.GetRegionLocationById(_gameTraveler.CurrentRegionLocationID).CanTravelToNext.Contains(regionLocationID))
                     {
                         validRegionLocationId = true;
-                        //if (_gameUniverse.RegionLocations[regionLocationID].CanTravelToNext.Contains(regionLocationID))
-                        //{
-                        //    validRegionLocationId = true;
-                        //}
-                        //else
-                        //{
-                        //    ClearInputBox();
-                        //    DisplayInputErrorMessage("You don't have enough experience points to enter!");
-                        //}
 
                     }
                     else
