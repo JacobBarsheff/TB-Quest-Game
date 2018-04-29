@@ -170,22 +170,6 @@ namespace TB_QuestGame
                 // get next game action from player
                 //
                 travelerActionChoice = GetNextProspectorAction();
-                //if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.MainMenu)
-                //{
-                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
-                //}
-                //else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.AdminMenu)
-                //{
-                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.AdminMenu);
-                //}
-                //else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.ManageInventory)
-                //{
-                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.useItem);
-                //}
-                //else if (ActionMenu.currentMenu == ActionMenu.CurrentMenu.ProspectorInfo)
-                //{
-                //    travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.ProspectorInfo);
-                //}
 
                 //
                 // choose an action based on the user's menu choice
@@ -344,23 +328,23 @@ namespace TB_QuestGame
             else
             {
 
-
-            //_gameConsoleView.DisplayGamePlayScreen("Consume Item", Text.CurrentInventoryNumbered(_gamePlayer.Inventory), ActionMenu.useItem, "Please Enter The Item Id: ");
-            //_gameConsoleView.GetInteger("Please enter the Item #: ", 1, _gamePlayer.Inventory.Count(), out playerChoice);
+                Random r = new Random();
+                int rand = r.Next(1, 10);
             switch (_gamePlayer.Inventory[playerChoice - 3].Type)
             {
                 case ProspectorObjectType.Food:
+                    _gamePlayer.Inventory[playerChoice - 3].RegionLocationId = rand;
                     _gameConsoleView.DisplayGamePlayScreen("Item Consumed", $"You consumed {_gamePlayer.Inventory[playerChoice - 3].Name} for {_gamePlayer.Inventory[playerChoice - 3].Value} health points!" , ActionMenu.useItem, "Please Enter The Item Id: ");
                     _gamePlayer.ProspectorHealth += _gamePlayer.Inventory[playerChoice - 3].Value;
                     _gamePlayer.Inventory.Remove(_gamePlayer.Inventory[playerChoice - 3]);
-                    
-                    break;
+                        break;
                 case ProspectorObjectType.Medicine:                    
-                    
+                    _gamePlayer.Inventory[playerChoice - 3].RegionLocationId = rand;                    
                     _gamePlayer.ProspectorHealth += _gamePlayer.Inventory[playerChoice - 3].Value;
                     _gameConsoleView.DisplayGamePlayScreen("Item Consumed", $"You consumed {_gamePlayer.Inventory[playerChoice - 3].Name} for {_gamePlayer.Inventory[playerChoice - 3].Value} health points!", ActionMenu.useItem, "Please Enter The Item Id: ");
-                    _gamePlayer.Inventory.Remove(_gamePlayer.Inventory[playerChoice - 3]);
-                    break;
+                        _gamePlayer.Inventory.Remove(_gamePlayer.Inventory[playerChoice - 3]);
+
+                        break;
                 case ProspectorObjectType.Weapon:
                     _gameConsoleView.DisplayGamePlayScreen("Invalid Item", $"You can't consume a {_gamePlayer.Inventory[playerChoice - 3].Name} because it is a {_gamePlayer.Inventory[playerChoice - 3].Type}!", ActionMenu.useItem, "Please Enter The Item Id: ");
                     break;
@@ -379,6 +363,7 @@ namespace TB_QuestGame
                 default:
                     break;
             }
+                
             }
         }
         private void InitializeAdventure()
@@ -484,31 +469,12 @@ namespace TB_QuestGame
                 //
                 ProspectorObject travelerObject = _gameUniverse.GetGameObjectById(travelerObjectToPickUpId) as ProspectorObject;
                 _gamePlayer.ExpPoints += travelerObject.ExperiencePoints;
-                //
-                // note: traveler object is added to list and the space-time location is set to 0
-                //
-                //if (travelerObject.Type == ProspectorObjectType.Treasure)
-                //{
-                //_gamePlayer.Money += travelerObject.Value;
-                //_gameConsoleView.DisplayConfirmTravelerObjectAddedToMoney(travelerObject);
-                //Random rnd = new Random();
-                //  travelerObject.RegionLocationId = rnd.Next(1, _gameUniverse.RegionLocations.Count);
-                //}
-                //else if(travelerObject.Type == ProspectorObjectType.Medicine){
-                //    _gamePlayer.PlayerHealthStatus += 10;
-                //}
-                //else
-                //{
-                //_gamePlayer.Inventory.Add(travelerObject);
+
                 travelerObject.RegionLocationId = 0;
-                //_gameConsoleView.DisplayConfirmTravelerObjectAddedToInventory(travelerObject);
-                // }
 
 
-                //
-                // display confirmation message
-                //
-                //_gamePlayer.Inventory.Add(travelerObject);
+
+      
             }
         }
 
@@ -619,13 +585,36 @@ namespace TB_QuestGame
         {
             int npcToTalkToId = _gameConsoleView.DisplayGetNpcToTalkTo();
 
+
+
             if (npcToTalkToId != 0)
             {
                 Npc npc = _gameUniverse.GetNpcById(npcToTalkToId);
 
+                Civilian civ = npc as Civilian;
+                if (civ.healing > 0)
+                {
+                Random rnd = new Random();
+                int random = rnd.Next(1, (100 -_gamePlayer.ProspectorHealth + 1));
+                    civ.healing = random;
+                }
+                if (_gamePlayer.ProspectorHealth + civ.healing <= 100)
+                {
+                _gamePlayer.ProspectorHealth += civ.healing;
+                }
+                else
+                {
+                    civ.healing = 0;
+                }
+                Random r = new Random();
+                int randExp = r.Next(1, 50);
+                civ.expPoints = randExp;
+                _gamePlayer.ExpPoints += civ.expPoints;
+
+                _gameConsoleView.DisplayTalkTo(civ);
 
 
-                _gameConsoleView.DisplayTalkTo(npc);
+ 
             }
 
 

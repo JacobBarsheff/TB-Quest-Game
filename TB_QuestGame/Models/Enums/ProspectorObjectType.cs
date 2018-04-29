@@ -14,7 +14,6 @@ namespace TB_QuestGame
         Treasure,
         Information,
         Resource,
-        //String,
         Tool
     }
 }

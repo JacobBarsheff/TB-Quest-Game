@@ -289,13 +289,13 @@ namespace TB_QuestGame
                 RegionLocationId = 1,
                 Description = "An assortment of bandages, gauze, and some pain killers.",
                 Type = ProspectorObjectType.Medicine,
-                Value = 115,
+                Value = 15,
                 CanInventory = true,
                 IsConsumable = false,
                 ExperiencePoints = 10,
                 IsVisible = true
             },
-                        new ProspectorObject
+            new ProspectorObject
             {
                 Id = 22,
                 Name = "Cough Medicine",
@@ -449,8 +449,33 @@ namespace TB_QuestGame
                 ExperiencePoints = 15
 
             },
+                      new ProspectorObject
+            {
+                Id = 33,
+                Name = "The Gold Mine",
+                RegionLocationId = 9,
+                Description = "You DID IT! Riches are yours!!!.",
+                Type = ProspectorObjectType.Treasure,
+                Value = 1000,
+                CanInventory = true,
+                IsConsumable = true,
+                IsVisible = true,
+                ExperiencePoints = 1000
 
-
+            },
+            new ProspectorObject
+            {
+                Id = 34,
+                Name = "Cough Medicine",
+                RegionLocationId = 4,
+                Description = "An small bottle of cough medicine. Looks to be expired.",
+                Type = ProspectorObjectType.Medicine,
+                Value = 15,
+                CanInventory = true,
+                IsConsumable = false,
+                ExperiencePoints = 10,
+                IsVisible = true
+            },
 
 
 

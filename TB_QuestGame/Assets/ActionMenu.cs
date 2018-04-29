@@ -61,17 +61,6 @@ namespace TB_QuestGame
                 }
         };
 
-        //public static Menu ManageTraveler = new Menu()
-        //{
-        //    MenuName = "ManageTraveler",
-        //    MenuTitle = "Manage Prospector",
-        //    MenuChoices = new Dictionary<char, ProspectorAction>()
-        //            {
-        //                ProspectorAction.MissionSetup,
-        //                ProspectorAction.TravelerInfo,
-        //                ProspectorAction.Exit
-        //            }
-        //};
         public static Menu AdminMenu = new Menu()
         {
             MenuName = "AdminMenu",

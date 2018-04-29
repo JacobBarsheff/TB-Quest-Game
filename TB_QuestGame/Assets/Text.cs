@@ -210,7 +210,7 @@ namespace TB_QuestGame
         public static string ListRegionLocations(IEnumerable<RegionLocation> regionLocations)
         {
             string messageBoxText =
-                "Space-Time Locations\n" +
+                "Region Locations\n" +
                 " \n" +
 
             //
@@ -291,15 +291,6 @@ namespace TB_QuestGame
                     }
                 }
 
-                //if (rl.CurrentRegionLocationID != gametraveler.CurrentRegionLocationID)
-                //{
-
-                //    regionLocationList +=                    
-                //        $"{rl.CurrentRegionLocationID}".PadRight(10) +
-                //        $"{rl.CommonName}".PadRight(30) +
-                //        $"{rl.Accessible}".PadRight(10) +
-                //        Environment.NewLine;
-                //}
 
 
             }

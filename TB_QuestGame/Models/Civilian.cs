@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace TB_QuestGame
 {
-    class Civilian : Npc, ISpeak
+    public class Civilian : Npc, ISpeak
     {
         public override int Id { get; set; }
         public override string Description { get; set; }
         public List<string> Messages { get; set; }
         public int healing { get; set; }
+        public int expPoints { get; set; }
         public string Speak()
         {
             if(this.Messages != null)

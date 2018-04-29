@@ -572,44 +572,6 @@ namespace TB_QuestGame
             
             }
 
-            //Console.BackgroundColor = ConsoleTheme.MapBoxHeaderBackgroundColor;
-            //Console.ForegroundColor = ConsoleTheme.MapBoxHeaderForegroundColor;
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 15, ConsoleLayout.MapBoxPositionTop + 1);
-            //Console.Write(ConsoleWindowHelper.Center("Map", ConsoleLayout.MapBoxWidth - 30));
-            //int startingRow = ConsoleLayout.MapBoxPositionTop + 1;
-            //int row = startingRow;
-            //Console.BackgroundColor = ConsoleTheme.MapBoxBackgroundColor;
-            //Console.ForegroundColor = ConsoleTheme.MapBoxForegroundColor;
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 2, row);
-            //Console.WriteLine(_gameUniverse.RegionLocations[6].CommonName);
-            //Console.WriteLine("Dawson");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 2);
-            //Console.WriteLine("Wilderness");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 24, row +2);
-            //Console.WriteLine("Edmonton");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 4);
-            //Console.WriteLine("Skagway");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 13, row + 4);
-            //Console.WriteLine("Wilderness");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 3, row + 6);
-            //Console.WriteLine("Wilderness");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 8);
-            //Console.WriteLine("Vancouver");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 19, row + 8);
-            //Console.WriteLine("Wilderness");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 5, row + 10);
-            //Console.WriteLine("Wilderness");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 7, row + 12);
-            //Console.WriteLine("Seattle");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 10);
-            //Console.WriteLine("N");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 29, row + 11);
-            //Console.WriteLine("E");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 28, row + 12);
-            //Console.WriteLine("S");
-            //Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 27, row + 11);
-            //Console.WriteLine("W ");
-
             Console.BackgroundColor = ConsoleTheme.MapBoxHeaderBackgroundColor;
             Console.ForegroundColor = ConsoleTheme.MapBoxHeaderForegroundColor;
             Console.SetCursorPosition(ConsoleLayout.MapBoxPositionLeft + 15, ConsoleLayout.MapBoxPositionTop + 1);
@@ -1411,7 +1373,7 @@ namespace TB_QuestGame
             }
             return npcId;
         }
-        public void DisplayTalkTo(Npc npc)
+        public void DisplayTalkTo(Civilian npc)
         {
             ISpeak speakingNpc = npc as ISpeak;
 
@@ -1421,8 +1383,15 @@ namespace TB_QuestGame
             {
                 message = "It appears the character has nothing to say."; 
             }
-
-            DisplayGamePlayScreen("Speaking to Character", message, ActionMenu.NpcMenu, "");
+            if (npc.healing > 0)
+            {
+            DisplayGamePlayScreen("Speaking to the Doctor", message + $"\n+{npc.healing} health!" + $"\n+{npc.expPoints} exp!", ActionMenu.NpcMenu, "");
+            }
+            else
+            {
+            DisplayGamePlayScreen("Speaking to Character", message + $"\n+{npc.expPoints} exp!", ActionMenu.NpcMenu , "");
+            }
+            
 
         }
         public int DisplayItemStats(string actionType)
